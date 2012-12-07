@@ -16,6 +16,9 @@
  */
 package ch.tutteli.dstar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
@@ -24,19 +27,30 @@ public class World
 {
 
     private Tile[][] tiles;
+    private Map<String,Cost> actualEnterCosts = new HashMap<>();
     private Action[][] actions;
 
     public World(Tile[][] theTiles) {
         tiles = theTiles;
         actions = new Action[theTiles.length][theTiles[0].length];
     }
-
-    public void setEnterCost(int x, int y, Cost enterCost) {
-        tiles[x][y].enterCost = enterCost;
+    public int getWidth(){
+        return tiles.length;
+    }
+    public int getHeight(){
+        return tiles[0].length;
+    }
+    
+    public Tile[][] getTiles(){
+        return tiles;
     }
 
-    public Cost getEnterCost(int x, int y) {
-        return tiles[x][y].enterCost;
+    public void setActualEnterCost(int x, int y, Cost enterCost) {
+        actualEnterCosts.put(x+","+y,enterCost);
+    }
+
+    public Cost getActualEnterCost(int x, int y) {
+        return actualEnterCosts.containsKey(x+","+y) ? actualEnterCosts.get(x+","+y): tiles[x][y].enterCost;
     }
 
     public boolean isNotAtTheTopOfTheMap(Tile tile) {
@@ -93,8 +107,11 @@ public class World
         return transition;
     }
 
-    public Action getAction(Tile state) {
-        return actions[state.getPosX()][state.getPosY()];
+    public Action getAction(Tile tile) {
+        return getAction(tile.getPosX(),tile.getPosY());
+    }
+    public Action getAction(int x, int y) {
+        return actions[x][y];
     }
     public void setAction(Tile tile, Action action){
         setAction(tile.getPosX(),tile.getPosY(),action);
@@ -108,9 +125,9 @@ public class World
 
         Action getAction();
 
-        int getCurrentTransitionCost();
+        int getViaCost();
 
-        void setTransitionCost(int cost);
+        void setViaCost(int cost);
 
         int getEnterCost();
 
@@ -143,7 +160,7 @@ public class World
         @Override
         public boolean hasBetterPath() {
             if (isNotAtTheCorrespondingBorder()) {
-                return isTransitFree() && getCurrentTransitionCost() < startTile.currentCost && endTile.currentCost <= startTile.bestCost;
+                return isTransitFree() && getViaCost() < startTile.currentCost && endTile.currentCost <= startTile.bestCost;
             }
             return false;
         }
@@ -167,12 +184,12 @@ public class World
         }
 
         @Override
-        public int getCurrentTransitionCost() {
+        public int getViaCost() {
             return startTile.viaCost.top;
         }
 
         @Override
-        public void setTransitionCost(int cost) {
+        public void setViaCost(int cost) {
             startTile.viaCost.top = cost;
         }
 
@@ -198,7 +215,7 @@ public class World
 
         @Override
         public int getActualEnterCost() {
-            return World.this.getEnterCost(endTile.getPosX(), endTile.getPosY()).bottom;
+            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).bottom;
         }
 
         @Override
@@ -215,12 +232,12 @@ public class World
         }
 
         @Override
-        public int getCurrentTransitionCost() {
+        public int getViaCost() {
             return startTile.viaCost.bottom;
         }
 
         @Override
-        public void setTransitionCost(int cost) {
+        public void setViaCost(int cost) {
             startTile.viaCost.bottom = cost;
         }
 
@@ -246,7 +263,7 @@ public class World
 
         @Override
         public int getActualEnterCost() {
-            return World.this.getEnterCost(endTile.getPosX(), endTile.getPosY()).top;
+            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).top;
         }
 
         @Override
@@ -263,12 +280,12 @@ public class World
         }
 
         @Override
-        public int getCurrentTransitionCost() {
+        public int getViaCost() {
             return startTile.viaCost.left;
         }
 
         @Override
-        public void setTransitionCost(int cost) {
+        public void setViaCost(int cost) {
             startTile.viaCost.left = cost;
         }
 
@@ -294,7 +311,7 @@ public class World
 
         @Override
         public int getActualEnterCost() {
-            return World.this.getEnterCost(endTile.getPosX(), endTile.getPosY()).right;
+            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).right;
         }
 
         @Override
@@ -311,12 +328,12 @@ public class World
         }
 
         @Override
-        public int getCurrentTransitionCost() {
+        public int getViaCost() {
             return startTile.viaCost.right;
         }
 
         @Override
-        public void setTransitionCost(int cost) {
+        public void setViaCost(int cost) {
             startTile.viaCost.right = cost;
         }
 
@@ -342,7 +359,7 @@ public class World
 
         @Override
         public int getActualEnterCost() {
-            return World.this.getEnterCost(endTile.getPosX(), endTile.getPosY()).left;
+            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).left;
         }
 
         @Override

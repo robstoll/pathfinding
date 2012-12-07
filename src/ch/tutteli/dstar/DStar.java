@@ -17,9 +17,7 @@
 package ch.tutteli.dstar;
 
 import ch.tutteli.dstar.utils.IntegerHelper;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
@@ -32,15 +30,12 @@ public class DStar implements IPathFinder
 
     private PriorityQueue<Tile> queuedTiles = new PriorityQueue<>();
     private Set<Tile> visitedTiles = new HashSet<>();
-    private Tile[][] tiles;
-    private List<Action> path = new ArrayList<>();
     private Tile start;
     private Tile goal;
     private Tile currentTile;
     private World world;
 
-    public DStar(Tile[][] theTiles, World aWorld) {
-        tiles = theTiles;
+    public DStar(World aWorld) {
         world = aWorld;
     }
 
@@ -51,19 +46,12 @@ public class DStar implements IPathFinder
         dijkstraBackward();
     }
 
-    @Override
-    public void recalculatePath(Tile start) {
-        addToQueue(start);
-        while (thereIsABetterPathInQueue()) {
-            stentzsAlgorithm();
-        }
-    }
-
     private void dijkstraBackward() {
         addToQueue(goal);
         while (currentTile != start) {
             stentzsAlgorithm();
         }
+
     }
 
     private void stentzsAlgorithm() {
@@ -73,48 +61,10 @@ public class DStar implements IPathFinder
         }
         calculateNeighbours();
         visitedTiles.add(currentTile);
-//        print();
-//        System.out.println("-------------------");
     }
 
     private boolean costOfCurrentHasIncreased() {
         return currentTile.bestCost < currentTile.currentCost;
-    }
-
-    private void print() {
-        String secondLine = "";
-        String thirdLine = "";
-        for (int y = 0; y < tiles[0].length; ++y) {
-            if (y != 0) {
-                System.out.print("\n");
-                System.out.println(secondLine);
-                System.out.println(thirdLine);
-                System.out.println("-----|-----|-----|-----|-----|-----|");
-                secondLine = "";
-                thirdLine = "";
-            }
-            for (int x = 0; x < tiles.length; ++x) {
-                Tile tile = tiles[x][y];
-                System.out.print((tile == currentTile ? "o " : "  ") + getCostForPrint(tile.viaCost.top) + "  |");
-
-                secondLine += getCostForPrint(tile.viaCost.left) + " " + getCostForPrint(tile.currentCost) + " " + getCostForPrint(tile.viaCost.right) + "|";
-                thirdLine += getCostForPrint(tile.bestCost) + " " + getCostForPrint(tile.viaCost.bottom) + getActionForPrint(tile) + "|";
-            }
-        }
-        System.out.print("\n");
-        System.out.println(secondLine);
-        System.out.println(thirdLine);
-        System.out.println("-----|-----|-----|-----|-----|-----|");
-        System.out.println("");
-    }
-
-    private String getCostForPrint(int cost) {
-        return cost != Integer.MAX_VALUE ? "" + cost : "x";
-    }
-
-    private String getActionForPrint(Tile tile) {
-        Action action = world.getAction(tile);
-        return action != null ? action.getSign() : "  ";
     }
 
     private void searchForBetterPathViaNeighbours() {
@@ -130,7 +80,7 @@ public class DStar implements IPathFinder
         int y = currentTile.getPosY();
         for (World.ITransition transition : transitions) {
             if (transition.hasBetterPath()) {
-                currentTile.currentCost = transition.getCurrentTransitionCost();
+                currentTile.currentCost = transition.getViaCost();
                 world.setAction(x, y, transition.getAction());
             }
         }
@@ -149,6 +99,16 @@ public class DStar implements IPathFinder
         if (world.isNotOnTheRightSideOfTheMap(currentTile)) {
             calculateTransition(world.new LeftTransition(world.getTileOnTheRight(currentTile)));
         }
+    }
+
+    @Override
+    public void recalculatePath(Tile currentStart) {
+        this.start = currentStart;
+        addToQueue(currentStart);
+        while (thereIsABetterPathInQueue()) {
+            stentzsAlgorithm();
+        }
+        
     }
 
     /**
@@ -173,27 +133,21 @@ public class DStar implements IPathFinder
         }
         queuedTiles.add(tile);
     }
-//
-//    private void printQueue() {
-//        for (Tile tile : queuedTiles) {
-//            System.out.println("(" + tile.getPosX() + "," + tile.getPosY() + ")->" + tile.currentCost + "{" + tile.bestCost + "}");
-//        }
-//    }
 
-    public void calculateTransition(World.ITransition transition) {
+    private void calculateTransition(World.ITransition transition) {
         if (transition.isNotAtTheCorrespondingBorder() && transition.isTransitFree()) {
             Tile startTile = transition.getStartTile();
             Tile endTile = transition.getEndTile();
-            transition.setTransitionCost(IntegerHelper.plusWithoutOverflow(transition.getEnterCost(), endTile.currentCost));
+            transition.setViaCost(IntegerHelper.plusWithoutOverflow(transition.getEnterCost(), endTile.currentCost));
 
             if (!visitedTiles.contains(startTile)) {
-                startTile.currentCost = transition.getCurrentTransitionCost();
+                startTile.currentCost = transition.getViaCost();
                 startTile.bestCost = startTile.currentCost;
                 world.setAction(startTile, transition.getAction());
                 addToQueue(startTile);
             }
-            if (isActionPointToEndTile(transition) && startTile.currentCost != transition.getCurrentTransitionCost()) {
-                startTile.currentCost = transition.getCurrentTransitionCost();
+            if (isActionPointToEndTile(transition) && startTile.currentCost != transition.getViaCost()) {
+                startTile.currentCost = transition.getViaCost();
                 addToQueue(startTile);
             }
             if (isItBetterToTakeVia(transition)) {
@@ -207,7 +161,7 @@ public class DStar implements IPathFinder
     }
 
     private boolean isItBetterToTakeVia(World.ITransition transition) {
-        return !isActionPointToEndTile(transition) && transition.getCurrentTransitionCost() < transition.getStartTile().currentCost;
+        return !isActionPointToEndTile(transition) && transition.getViaCost() < transition.getStartTile().currentCost;
     }
 
     private boolean isActionPointToEndTile(World.ITransition transition) {
@@ -215,13 +169,13 @@ public class DStar implements IPathFinder
     }
 
     private void takeViaInsteadOfCurrentAction(World.ITransition transition) {
-        Tile startTile = transition.getEndTile();
+        Tile startTile = transition.getStartTile();
         Tile endTile = transition.getEndTile();
 
         if (endTile.currentCost == endTile.bestCost) {
             world.setAction(startTile, transition.getAction());
-            startTile.currentCost = transition.getCurrentTransitionCost();
-            startTile.bestCost = transition.getCurrentTransitionCost();
+            startTile.currentCost = transition.getViaCost();
+            startTile.bestCost = transition.getViaCost();
             addToQueue(startTile);
         } else {
             endTile.bestCost = endTile.currentCost;
