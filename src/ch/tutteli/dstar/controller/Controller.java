@@ -17,7 +17,17 @@
 package ch.tutteli.dstar.controller;
 
 import ch.tutteli.dstar.DStar;
-import ch.tutteli.dstar.view.DStarView;
+import ch.tutteli.dstar.IPathFinder;
+import ch.tutteli.dstar.Tile;
+import ch.tutteli.dstar.Walker;
+import ch.tutteli.dstar.World;
+import ch.tutteli.dstar.utils.ImageHelper;
+import ch.tutteli.dstar.utils.WorldHelper;
+import ch.tutteli.dstar.view.WorldView;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -25,9 +35,31 @@ import ch.tutteli.dstar.view.DStarView;
  */
 public class Controller
 {
-    public void show(){
-        new DStarView();
-//        DStar dstar = new DStar(6, 6);
-//        dstar.run(0, 2, 5, 2);
+
+    public void run(final World world, final BufferedImage image, final int pixelFactor, final int sleepInMilliseconds) {
+        final WorldView worldView = WorldHelper.setupWorldView(world, image, pixelFactor);
+        worldView.addGoListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Tile startTile = world.getTile(worldView.getStartPosX(), worldView.getStartPosY());
+                Tile endTile = world.getTile(worldView.getEndPosX(), worldView.getEndPosY());
+
+                ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
+                ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
+                worldView.repaint();
+
+                IPathFinder dstar = new DStar(world);
+                Walker walker = new Walker(world, dstar, worldView, pixelFactor);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                }
+                
+                walker.walkSilent(startTile, endTile, sleepInMilliseconds);
+            }
+        });
+        worldView.setVisible(true);
+
     }
 }

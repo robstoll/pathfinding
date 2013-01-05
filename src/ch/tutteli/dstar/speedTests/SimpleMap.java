@@ -20,6 +20,7 @@ import ch.tutteli.dstar.DStar;
 import ch.tutteli.dstar.Tile;
 import ch.tutteli.dstar.Walker;
 import ch.tutteli.dstar.World;
+import ch.tutteli.dstar.controller.Controller;
 import ch.tutteli.dstar.utils.ImageHelper;
 import ch.tutteli.dstar.utils.WorldHelper;
 import ch.tutteli.dstar.view.WorldView;
@@ -54,6 +55,7 @@ public class SimpleMap
 
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
+        
         WorldView worldView = WorldHelper.setupWorldView(world, image, pixelFactor);
         worldView.setVisible(true);
 
@@ -64,7 +66,7 @@ public class SimpleMap
         } catch (InterruptedException ex) {
         }
         walker.walkSilent(startTile, endTile, 200);
-
+        
 
     }
 }

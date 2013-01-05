@@ -16,14 +16,12 @@
  */
 package ch.tutteli.dstar.utils;
 
-import ch.tutteli.dstar.Action;
 import ch.tutteli.dstar.Cost;
 import ch.tutteli.dstar.Tile;
 import ch.tutteli.dstar.World;
 import ch.tutteli.dstar.view.WorldView;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.Random;
 
 /**

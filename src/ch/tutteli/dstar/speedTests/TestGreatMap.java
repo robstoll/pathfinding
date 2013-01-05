@@ -16,8 +16,6 @@
  */
 package ch.tutteli.dstar.speedTests;
 
-import ch.tutteli.dstar.Action;
-import ch.tutteli.dstar.Cost;
 import ch.tutteli.dstar.DStar;
 import ch.tutteli.dstar.Tile;
 import ch.tutteli.dstar.Walker;
@@ -26,12 +24,7 @@ import ch.tutteli.dstar.utils.ImageHelper;
 import ch.tutteli.dstar.utils.WorldHelper;
 import ch.tutteli.dstar.view.WorldView;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -54,8 +47,8 @@ public class TestGreatMap
 
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
 
-        Tile startTile = WorldHelper.getRandomTile(world, null);
-        Tile endTile = WorldHelper.getRandomTile(world, startTile);
+        Tile startTile = tiles[56][71];// WorldHelper.getRandomTile(world, null);
+        Tile endTile = tiles[77][95];// WorldHelper.getRandomTile(world, startTile);
 
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
@@ -72,9 +65,6 @@ public class TestGreatMap
         Walker walker = new Walker(world, dstar, worldView, pixelFactor);
         walker.walkSilent(startTile, endTile,20);
 
-
-
-
     }
 
     private static void setWalls(World world) {
@@ -83,15 +73,15 @@ public class TestGreatMap
         WorldHelper.horizontalWall(world, 7, 3, 23);
         WorldHelper.horizontalWall(world, 9, 31, 48);
         WorldHelper.horizontalWall(world, 18, 40, 57);
-        WorldHelper.horizontalWall(world, 19, 3, 9);
+        WorldHelper.horizontalWall(world, 19, 2, 9);
         WorldHelper.horizontalWall(world, 20, 73, 86);
         WorldHelper.horizontalWall(world, 26, 0, 25);
         WorldHelper.horizontalWall(world, 29, 49, 57);
         WorldHelper.horizontalWall(world, 30, 30, 36);
-        WorldHelper.horizontalWall(world, 39, 45, 62);
+        WorldHelper.horizontalWall(world, 35, 28, 78);
+        WorldHelper.horizontalWall(world, 45, 45, 62);
         WorldHelper.horizontalWall(world, 48, 2, 23);
-        WorldHelper.horizontalWall(world, 49, 28, 78);
-        WorldHelper.horizontalWall(world, 55, 67, 80);
+        WorldHelper.horizontalWall(world, 54, 67, 80);
         WorldHelper.horizontalWall(world, 60, 69, 86);
         WorldHelper.horizontalWall(world, 62, 26, 50);
         WorldHelper.horizontalWall(world, 75, 16, 74);

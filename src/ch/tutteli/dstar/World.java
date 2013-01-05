@@ -44,6 +44,9 @@ public class World
     public Tile[][] getTiles(){
         return tiles;
     }
+    public Tile getTile(int x, int y){
+        return tiles[x][y];
+    }
 
     public void setActualEnterCost(int x, int y, Cost enterCost) {
         actualEnterCosts.put(x+","+y,enterCost);
