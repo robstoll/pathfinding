@@ -14,11 +14,11 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar;
+package ch.tutteli.pathfinding;
 
-import ch.tutteli.dstar.utils.ImageHelper;
-import ch.tutteli.dstar.utils.IntegerHelper;
-import ch.tutteli.dstar.view.WorldView;
+import ch.tutteli.pathfinding.utils.ImageHelper;
+import ch.tutteli.pathfinding.utils.IntegerHelper;
+import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -88,6 +88,7 @@ public class Walker
                 if (actualCost > transition.getViaCost()) {
                     ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.CYAN);
                     transition.setViaCost(IntegerHelper.plusWithoutOverflow(actualCost, endTile.currentCost));
+                    transition.setEnterCost(actualCost);
                     tmpTile.currentCost = transition.getViaCost();
                     walkingColor = changeWalkingColor();
 

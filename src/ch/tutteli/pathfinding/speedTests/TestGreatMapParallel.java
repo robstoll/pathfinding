@@ -14,8 +14,9 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.speedTests;
+package ch.tutteli.pathfinding.speedTests;
 
+import ch.tutteli.pathfinding.DStar;
 import java.util.concurrent.CountDownLatch;
 
 /**

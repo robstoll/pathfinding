@@ -14,29 +14,19 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar;
+package ch.tutteli.pathfinding;
 
-import ch.tutteli.dstar.utils.IntegerHelper;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import ch.tutteli.pathfinding.utils.IntegerHelper;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class DStar implements IPathFinder
+public class DStar extends APathFinder implements IPathFinder
 {
 
-    private PriorityQueue<Tile> queuedTiles = new PriorityQueue<>();
-    private Set<Tile> visitedTiles = new HashSet<>();
-    private Tile start;
-    private Tile goal;
-    private Tile currentTile;
-    private World world;
-
-    public DStar(World aWorld) {
-        world = aWorld;
+    public DStar(World world) {
+        super(world);
     }
 
     @Override
@@ -86,29 +76,14 @@ public class DStar implements IPathFinder
         }
     }
 
-    private void calculateNeighbours() {
-        if (world.isNotAtTheTopOfTheMap(currentTile)) {
-            calculateTransition(world.new BottomTransition(world.getTileAbove(currentTile)));
-        }
-        if (world.isNotAtTheBottomOfTheMap(currentTile)) {
-            calculateTransition(world.new TopTransition(world.getTileBelow(currentTile)));
-        }
-        if (world.isNotOnTheLeftSideOfTheMap(currentTile)) {
-            calculateTransition(world.new RightTransition(world.getTileOnTheLeft(currentTile)));
-        }
-        if (world.isNotOnTheRightSideOfTheMap(currentTile)) {
-            calculateTransition(world.new LeftTransition(world.getTileOnTheRight(currentTile)));
-        }
-    }
-
     @Override
     public void recalculatePath(Tile currentStart) {
-        this.start = currentStart;
+        start = currentStart;
         addToQueue(currentStart);
         while (thereIsABetterPathInQueue()) {
             stentzsAlgorithm();
         }
-        
+
     }
 
     /**
@@ -127,19 +102,13 @@ public class DStar implements IPathFinder
         return betterPathFound;
     }
 
-    private void addToQueue(Tile tile) {
-        if (queuedTiles.contains(tile)) {
-            queuedTiles.remove(tile);
-        }
-        queuedTiles.add(tile);
-    }
-
-    private void calculateTransition(World.ITransition transition) {
+    @Override
+    protected void calculateTransition(World.ITransition transition) {
         if (transition.isNotAtTheCorrespondingBorder() && transition.isTransitFree()) {
             Tile startTile = transition.getStartTile();
             Tile endTile = transition.getEndTile();
             transition.setViaCost(IntegerHelper.plusWithoutOverflow(transition.getEnterCost(), endTile.currentCost));
-
+            
             if (!visitedTiles.contains(startTile)) {
                 startTile.currentCost = transition.getViaCost();
                 startTile.bestCost = startTile.currentCost;

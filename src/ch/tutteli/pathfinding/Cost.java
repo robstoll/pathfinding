@@ -14,25 +14,27 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar;
-
-import java.util.HashMap;
-import java.util.Map;
+package ch.tutteli.pathfinding;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class ActualWorld
+public class Cost
 {
-    Map<String, Cost> actualEnterCosts = new HashMap<>();
 
-    public Cost getActualEnterCost(int x, int y) {
-        return actualEnterCosts.containsKey(x + "," + y) ? actualEnterCosts.get(x + "," + y) :  null;
-    }
+    public int top;
+    public int bottom;
+    public int left;
+    public int right;
 
-    public void setActualEnterCost(int x, int y, Cost enterCost) {
-        actualEnterCosts.put(x + "," + y, enterCost);
+    public Cost(int cost){
+        this(cost,cost,cost,cost);
     }
-        
+    public Cost(int costTop, int costBottom, int costLeft, int costRight) {
+        top = costTop;
+        bottom = costBottom;
+        left = costLeft;
+        right = costRight;
+    }
 }

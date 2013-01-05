@@ -14,20 +14,24 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.utils;
+package ch.tutteli.pathfinding.examples;
+
+import ch.tutteli.pathfinding.AStar;
+import ch.tutteli.pathfinding.DStar;
+import ch.tutteli.pathfinding.IPathFinder;
+import ch.tutteli.pathfinding.World;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class IntegerHelper
+public class PathFinderFactory
 {
 
-    private IntegerHelper() {
+    private PathFinderFactory() {
     }
 
-    public static int plusWithoutOverflow(long cost1, long cost2) {
-        long result = cost1 + cost2;
-        return result <= Integer.MAX_VALUE ? (int) result : Integer.MAX_VALUE;
+    public static IPathFinder create(World world) {
+        return new DStar(world);
     }
 }

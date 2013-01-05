@@ -14,13 +14,15 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.speedTests;
+package ch.tutteli.pathfinding.speedTests;
 
-import ch.tutteli.dstar.ActualWorld;
-import ch.tutteli.dstar.DStar;
-import ch.tutteli.dstar.Tile;
-import ch.tutteli.dstar.World;
-import ch.tutteli.dstar.examples.TestGreatMapWithBug;
+import ch.tutteli.pathfinding.ActualWorld;
+import ch.tutteli.pathfinding.DStar;
+import ch.tutteli.pathfinding.IPathFinder;
+import ch.tutteli.pathfinding.Tile;
+import ch.tutteli.pathfinding.World;
+import ch.tutteli.pathfinding.examples.PathFinderFactory;
+import ch.tutteli.pathfinding.examples.TestGreatMapWithBug;
 import java.io.IOException;
 
 /**
@@ -35,6 +37,7 @@ public class SpeedTestHelper
 
     public SpeedTestHelper() {
         actualWorld = new ActualWorld();
+
         TestGreatMapWithBug.setWalls(actualWorld);
         try {
             System.out.println("Press enter to start.");
@@ -50,8 +53,8 @@ public class SpeedTestHelper
         World world = new World(actualWorld, worldWidth, worldHeight);
         Tile startTile = world.getTile(10, 71);
         Tile endTile = world.getTile(77, 95);
-        DStar dstar = new DStar(world);
-        SimpleWalker walker = new SimpleWalker(world, dstar);
+        IPathFinder pathFinder = PathFinderFactory.create(world);
+        SimpleWalker walker = new SimpleWalker(world, pathFinder);
         walker.walk(startTile, endTile);
     }
 }

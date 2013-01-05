@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar;
+package ch.tutteli.pathfinding;
 
 import java.util.List;
 

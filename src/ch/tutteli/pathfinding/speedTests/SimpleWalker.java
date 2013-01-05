@@ -14,10 +14,13 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.speedTests;
+package ch.tutteli.pathfinding.speedTests;
 
-import ch.tutteli.dstar.*;
-import ch.tutteli.dstar.utils.IntegerHelper;
+import ch.tutteli.pathfinding.World;
+import ch.tutteli.pathfinding.Tile;
+import ch.tutteli.pathfinding.Action;
+import ch.tutteli.pathfinding.IPathFinder;
+import ch.tutteli.pathfinding.utils.IntegerHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;

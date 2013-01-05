@@ -14,14 +14,20 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar;
+package ch.tutteli.pathfinding.utils;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public interface IPathFinder
+public class IntegerHelper
 {
-    void calculatePath(Tile start, Tile goal);
-    void recalculatePath(Tile start);
+
+    private IntegerHelper() {
+    }
+
+    public static int plusWithoutOverflow(long cost1, long cost2) {
+        long result = cost1 + cost2;
+        return result <= Integer.MAX_VALUE ? (int) result : Integer.MAX_VALUE;
+    }
 }

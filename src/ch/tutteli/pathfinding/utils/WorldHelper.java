@@ -14,13 +14,13 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.utils;
+package ch.tutteli.pathfinding.utils;
 
-import ch.tutteli.dstar.ActualWorld;
-import ch.tutteli.dstar.Cost;
-import ch.tutteli.dstar.Tile;
-import ch.tutteli.dstar.World;
-import ch.tutteli.dstar.view.WorldView;
+import ch.tutteli.pathfinding.ActualWorld;
+import ch.tutteli.pathfinding.Cost;
+import ch.tutteli.pathfinding.Tile;
+import ch.tutteli.pathfinding.World;
+import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -78,7 +78,7 @@ public class WorldHelper
         return states;
     }
 
-    public static Tile getRandomTile(ActualWorld actualWorld, World world, Tile exceptThisTile) {
+    public static Tile getRandomTile(World world, Tile exceptThisTile) {
         Tile tile = null;
         int width = world.getWidth();
         int height = world.getHeight();
@@ -89,14 +89,14 @@ public class WorldHelper
         while (tile == null) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
-            if (actualWorld.getActualEnterCost(x, y).top != Integer.MAX_VALUE && (x != expectThisX || y != expectThisY)) {
+            if (getActualEnterCost(world,x, y).top != Integer.MAX_VALUE && (x != expectThisX || y != expectThisY)) {
                 tile = world.getTiles()[x][y];
             }
         }
         return tile;
     }
 
-    public static WorldView setupWorldView(ActualWorld actualWorld, World world, BufferedImage image, int pixelFactor) {
+    public static WorldView setupWorldView(World world, BufferedImage image, int pixelFactor) {
         WorldView worldView = new WorldView(image);
 
         int worldWidth = world.getWidth();
@@ -106,11 +106,17 @@ public class WorldHelper
 
         for (int x = 0; x < worldWidth; ++x) {
             for (int y = 0; y < worldHeight; ++y) {
-                if (actualWorld.getActualEnterCost(x, y).top == Integer.MAX_VALUE) {
+                if (getActualEnterCost(world,x, y).top == Integer.MAX_VALUE) {
                     ImageHelper.setPoint(image, x, y, pixelFactor, Color.WHITE);
                 }
             }
         }
         return worldView;
     }
+    
+    public static Cost getActualEnterCost(World world, int x, int y){
+         Cost cost = world.getActualWorld().getActualEnterCost(x, y);
+         return cost != null ? cost : world.getTile(x, y).enterCost;
+    }
+           
 }

@@ -14,22 +14,25 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.utils;
+package ch.tutteli.pathfinding;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class ImageHelper
+public class ActualWorld
 {
-    public static void setPoint(BufferedImage image,int x,int y,int factor, Color color){
-        for(int i=0;i<factor;++i){
-            for(int j=0;j<factor;++j){
-                image.setRGB(x*factor+i, y*factor+j, color.getRGB());
-            }
-        }
+    Map<String, Cost> actualEnterCosts = new HashMap<>();
+
+    public Cost getActualEnterCost(int x, int y) {
+        return actualEnterCosts.containsKey(x + "," + y) ? actualEnterCosts.get(x + "," + y) :  null;
     }
+
+    public void setActualEnterCost(int x, int y, Cost enterCost) {
+        actualEnterCosts.put(x + "," + y, enterCost);
+    }
+        
 }

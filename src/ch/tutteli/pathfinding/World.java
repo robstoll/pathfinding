@@ -14,9 +14,7 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar;
-
-import ch.tutteli.dstar.utils.WorldHelper;
+package ch.tutteli.pathfinding;
 
 /**
  *
@@ -40,13 +38,13 @@ public class World
     }
 
     private Tile[][] createTiles(int width, int height, int initialCost) {
-        Tile[][] states = new Tile[width][height];
+        Tile[][] tiles = new Tile[width][height];
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                states[x][y] = new Tile(x, y);
+                tiles[x][y] = new Tile(x, y, initialCost);
             }
         }
-        return states;
+        return tiles;
     }
 
     public int getWidth() {
@@ -108,10 +106,10 @@ public class World
                 case GoDown:
                     transition = new BottomTransition(state);
                     break;
-                case GoToTheLeft:
+                case GoLeft:
                     transition = new LeftTransition(state);
                     break;
-                case GoToTheRight:
+                case GoRight:
                     transition = new RightTransition(state);
                     break;
             }
@@ -133,6 +131,10 @@ public class World
 
     public void setAction(int x, int y, Action action) {
         actions[x][y] = action;
+    }
+
+    public ActualWorld getActualWorld() {
+        return actualWorld;
     }
 
     public interface ITransition
@@ -159,6 +161,8 @@ public class World
         boolean isNotAtTheCorrespondingBorder();
 
         boolean isTransitFree();
+
+        public void setEnterCost(int actualCost);
     }
 
     public abstract class ATransition implements ITransition
@@ -172,7 +176,7 @@ public class World
             endTile = theEndTile;
         }
 
-        protected abstract int getActualEnterCost(Cost cost);
+        protected abstract int getSpecificEnterCost(Cost cost);
 
         @Override
         public boolean hasBetterPath() {
@@ -192,11 +196,12 @@ public class World
             return endTile;
         }
 
+        @Override
         public int getActualEnterCost() {
             int x = endTile.getPosX();
             int y = endTile.getPosY();
             Cost cost = World.this.actualWorld.getActualEnterCost(x, y);
-            return getActualEnterCost(cost != null ? cost : World.this.tiles[x][y].enterCost);
+            return getSpecificEnterCost(cost != null ? cost : World.this.tiles[x][y].enterCost);
         }
     }
 
@@ -238,13 +243,18 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost(Cost cost) {
+        protected int getSpecificEnterCost(Cost cost) {
             return cost.bottom;
         }
 
         @Override
         public int getEndTileReverseCost() {
             return endTile.viaCost.bottom;
+        }
+
+        @Override
+        public void setEnterCost(int actualCost) {
+            endTile.enterCost.bottom = actualCost;
         }
     }
 
@@ -286,13 +296,17 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost(Cost cost) {
+        protected int getSpecificEnterCost(Cost cost) {
             return cost.top;
         }
 
         @Override
         public int getEndTileReverseCost() {
             return endTile.viaCost.top;
+        }
+        @Override
+        public void setEnterCost(int actualCost) {
+            endTile.enterCost.top = actualCost;
         }
     }
 
@@ -315,7 +329,7 @@ public class World
 
         @Override
         public Action getAction() {
-            return Action.GoToTheLeft;
+            return Action.GoLeft;
         }
 
         @Override
@@ -334,13 +348,17 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost(Cost cost) {
+        protected int getSpecificEnterCost(Cost cost) {
             return cost.right;
         }
 
         @Override
         public int getEndTileReverseCost() {
             return endTile.viaCost.right;
+        }
+        @Override
+        public void setEnterCost(int actualCost) {
+            endTile.enterCost.right = actualCost;
         }
     }
 
@@ -363,7 +381,7 @@ public class World
 
         @Override
         public Action getAction() {
-            return Action.GoToTheRight;
+            return Action.GoRight;
         }
 
         @Override
@@ -382,13 +400,17 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost(Cost cost) {
+        protected int getSpecificEnterCost(Cost cost) {
             return cost.left;
         }
 
         @Override
         public int getEndTileReverseCost() {
             return endTile.viaCost.left;
+        }
+        @Override
+        public void setEnterCost(int actualCost) {
+            endTile.enterCost.left = actualCost;
         }
     }
 }

@@ -14,27 +14,14 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar;
+package ch.tutteli.pathfinding;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class Cost
+public interface IPathFinder
 {
-
-    public int top;
-    public int bottom;
-    public int left;
-    public int right;
-
-    public Cost(int cost){
-        this(cost,cost,cost,cost);
-    }
-    public Cost(int costTop, int costBottom, int costLeft, int costRight) {
-        top = costTop;
-        bottom = costBottom;
-        left = costLeft;
-        right = costRight;
-    }
+    void calculatePath(Tile start, Tile goal);
+    void recalculatePath(Tile start);
 }

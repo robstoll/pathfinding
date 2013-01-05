@@ -14,16 +14,18 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.examples;
+package ch.tutteli.pathfinding.examples;
 
-import ch.tutteli.dstar.ActualWorld;
-import ch.tutteli.dstar.DStar;
-import ch.tutteli.dstar.Tile;
-import ch.tutteli.dstar.Walker;
-import ch.tutteli.dstar.World;
-import ch.tutteli.dstar.utils.ImageHelper;
-import ch.tutteli.dstar.utils.WorldHelper;
-import ch.tutteli.dstar.view.WorldView;
+import ch.tutteli.pathfinding.AStar;
+import ch.tutteli.pathfinding.ActualWorld;
+import ch.tutteli.pathfinding.DStar;
+import ch.tutteli.pathfinding.IPathFinder;
+import ch.tutteli.pathfinding.Tile;
+import ch.tutteli.pathfinding.Walker;
+import ch.tutteli.pathfinding.World;
+import ch.tutteli.pathfinding.utils.ImageHelper;
+import ch.tutteli.pathfinding.utils.WorldHelper;
+import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
@@ -57,11 +59,11 @@ public class SimpleMap
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
         
-        WorldView worldView = WorldHelper.setupWorldView(actualWorld,world, image, pixelFactor);
+        WorldView worldView = WorldHelper.setupWorldView(world, image, pixelFactor);
         worldView.setVisible(true);
 
-        DStar dstar = new DStar(world);
-        Walker walker = new Walker(world, dstar, worldView, pixelFactor);
+        IPathFinder pathFinder = PathFinderFactory.create(world);
+        Walker walker = new Walker(world, pathFinder, worldView, pixelFactor);
         try {
             Thread.sleep(500);
         } catch (InterruptedException ex) {

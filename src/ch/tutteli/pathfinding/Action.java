@@ -14,34 +14,31 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.speedTests;
+package ch.tutteli.pathfinding;
 
 /**
- *
+ * Represents a movement action
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class TestGreatMapSequential
+public enum Action
 {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        
-        SpeedTestHelper helper = new SpeedTestHelper();
-        //somehow the first two runs need longer
-        helper.run();
-        helper.run();
-      
-        for (int i = 1; i <= 100; ++i) {
-            long startTime = System.nanoTime();
-            for (int j = 0; j < i; ++j) {
-                 helper.run();
-            }
-            long timeUsed = System.nanoTime() - startTime;
-            System.out.println(i + "\t" + timeUsed);
-           
-        }
+    GoUp,
+    GoDown,
+    GoLeft,
+    GoRight;
 
+    public String getSign() {
+        switch (this) {
+            case GoUp:
+                return " ˄";
+            case GoDown:
+                return " ˅";
+            case GoLeft:
+                return " <";
+            case GoRight:
+            default:
+                return " >";
+        }
     }
 }
