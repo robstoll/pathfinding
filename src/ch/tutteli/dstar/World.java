@@ -16,8 +16,7 @@
  */
 package ch.tutteli.dstar;
 
-import java.util.HashMap;
-import java.util.Map;
+import ch.tutteli.dstar.utils.WorldHelper;
 
 /**
  *
@@ -27,33 +26,43 @@ public class World
 {
 
     private Tile[][] tiles;
-    private Map<String,Cost> actualEnterCosts = new HashMap<>();
     private Action[][] actions;
+    private ActualWorld actualWorld;
 
-    public World(Tile[][] theTiles) {
-        tiles = theTiles;
-        actions = new Action[theTiles.length][theTiles[0].length];
+    public World(ActualWorld theActualWorld, int worldWidth, int worldHeight) {
+        this(theActualWorld, worldWidth, worldHeight, 1);
     }
-    public int getWidth(){
+
+    public World(ActualWorld theActualWorld, int worldWidth, int worldHeight, int initialCost) {
+        actualWorld = theActualWorld;
+        tiles = createTiles(worldWidth, worldHeight, initialCost);
+        actions = new Action[worldWidth][worldHeight];
+    }
+
+    private Tile[][] createTiles(int width, int height, int initialCost) {
+        Tile[][] states = new Tile[width][height];
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                states[x][y] = new Tile(x, y);
+            }
+        }
+        return states;
+    }
+
+    public int getWidth() {
         return tiles.length;
     }
-    public int getHeight(){
+
+    public int getHeight() {
         return tiles[0].length;
     }
-    
-    public Tile[][] getTiles(){
+
+    public Tile[][] getTiles() {
         return tiles;
     }
-    public Tile getTile(int x, int y){
+
+    public Tile getTile(int x, int y) {
         return tiles[x][y];
-    }
-
-    public void setActualEnterCost(int x, int y, Cost enterCost) {
-        actualEnterCosts.put(x+","+y,enterCost);
-    }
-
-    public Cost getActualEnterCost(int x, int y) {
-        return actualEnterCosts.containsKey(x+","+y) ? actualEnterCosts.get(x+","+y): tiles[x][y].enterCost;
     }
 
     public boolean isNotAtTheTopOfTheMap(Tile tile) {
@@ -111,14 +120,17 @@ public class World
     }
 
     public Action getAction(Tile tile) {
-        return getAction(tile.getPosX(),tile.getPosY());
+        return getAction(tile.getPosX(), tile.getPosY());
     }
+
     public Action getAction(int x, int y) {
         return actions[x][y];
     }
-    public void setAction(Tile tile, Action action){
-        setAction(tile.getPosX(),tile.getPosY(),action);
+
+    public void setAction(Tile tile, Action action) {
+        setAction(tile.getPosX(), tile.getPosY(), action);
     }
+
     public void setAction(int x, int y, Action action) {
         actions[x][y] = action;
     }
@@ -160,6 +172,8 @@ public class World
             endTile = theEndTile;
         }
 
+        protected abstract int getActualEnterCost(Cost cost);
+
         @Override
         public boolean hasBetterPath() {
             if (isNotAtTheCorrespondingBorder()) {
@@ -176,6 +190,13 @@ public class World
         @Override
         public Tile getEndTile() {
             return endTile;
+        }
+
+        public int getActualEnterCost() {
+            int x = endTile.getPosX();
+            int y = endTile.getPosY();
+            Cost cost = World.this.actualWorld.getActualEnterCost(x, y);
+            return getActualEnterCost(cost != null ? cost : World.this.tiles[x][y].enterCost);
         }
     }
 
@@ -217,8 +238,8 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost() {
-            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).bottom;
+        public int getActualEnterCost(Cost cost) {
+            return cost.bottom;
         }
 
         @Override
@@ -265,8 +286,8 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost() {
-            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).top;
+        public int getActualEnterCost(Cost cost) {
+            return cost.top;
         }
 
         @Override
@@ -313,8 +334,8 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost() {
-            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).right;
+        public int getActualEnterCost(Cost cost) {
+            return cost.right;
         }
 
         @Override
@@ -361,8 +382,8 @@ public class World
         }
 
         @Override
-        public int getActualEnterCost() {
-            return World.this.getActualEnterCost(endTile.getPosX(), endTile.getPosY()).left;
+        public int getActualEnterCost(Cost cost) {
+            return cost.left;
         }
 
         @Override

@@ -14,13 +14,13 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.dstar.speedTests;
+package ch.tutteli.dstar.examples;
 
+import ch.tutteli.dstar.ActualWorld;
 import ch.tutteli.dstar.DStar;
 import ch.tutteli.dstar.Tile;
 import ch.tutteli.dstar.Walker;
 import ch.tutteli.dstar.World;
-import ch.tutteli.dstar.controller.Controller;
 import ch.tutteli.dstar.utils.ImageHelper;
 import ch.tutteli.dstar.utils.WorldHelper;
 import ch.tutteli.dstar.view.WorldView;
@@ -41,22 +41,23 @@ public class SimpleMap
         int worldWidth = 6;
         int worldHeight = 6;
         int pixelFactor = 100;
-        Tile[][] tiles = WorldHelper.createTiles(worldWidth, worldHeight);
-        World world = new World(tiles);
-        WorldHelper.setAsObstacle(world, 3, 2);
-        WorldHelper.setAsObstacle(world, 2, 1);
-        WorldHelper.setAsObstacle(world, 3, 3);
-        WorldHelper.setAsObstacle(world, 2, 4);
+        ActualWorld actualWorld = new ActualWorld();
+        WorldHelper.setAsObstacle(actualWorld, 3, 2);
+        WorldHelper.setAsObstacle(actualWorld, 2, 1);
+        WorldHelper.setAsObstacle(actualWorld, 3, 3);
+        WorldHelper.setAsObstacle(actualWorld, 2, 4);
 
+        World world = new World(actualWorld,worldWidth,worldHeight);
+        
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
 
-        Tile startTile = tiles[0][2];
-        Tile endTile = tiles[5][2];
+        Tile startTile = world.getTile(0, 2);
+        Tile endTile =  world.getTile(5,2);
 
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
         
-        WorldView worldView = WorldHelper.setupWorldView(world, image, pixelFactor);
+        WorldView worldView = WorldHelper.setupWorldView(actualWorld,world, image, pixelFactor);
         worldView.setVisible(true);
 
         DStar dstar = new DStar(world);

@@ -16,6 +16,7 @@
  */
 package ch.tutteli.dstar.utils;
 
+import ch.tutteli.dstar.ActualWorld;
 import ch.tutteli.dstar.Cost;
 import ch.tutteli.dstar.Tile;
 import ch.tutteli.dstar.World;
@@ -34,23 +35,23 @@ public class WorldHelper
     private WorldHelper() {
     }
 
-    public static void setAsObstacle(World world, int x, int y) {
+    public static void setAsObstacle(ActualWorld world, int x, int y) {
         world.setActualEnterCost(x, y, new Cost(Integer.MAX_VALUE));
     }
 
-    public static void horizontalWall(World world, int y, int startX, int endX) {
+    public static void horizontalWall(ActualWorld world, int y, int startX, int endX) {
         for (int x = startX; x < endX; ++x) {
             WorldHelper.setAsObstacle(world, x, y);
         }
     }
 
-    public static void verticalWall(World world, int x, int startY, int endY) {
+    public static void verticalWall(ActualWorld world, int x, int startY, int endY) {
         for (int y = startY; y < endY; ++y) {
             WorldHelper.setAsObstacle(world, x, y);
         }
     }
 
-    public static void block(World world, int startX, int endX, int startY, int endY) {
+    public static void block(ActualWorld world, int startX, int endX, int startY, int endY) {
         //Would be faster, but then I cannot use the getRandomTile method (could be placed in a block
 //        horizontalWall(world, startY, startX, endX);
 //        horizontalWall(world, endY, startX, endX);
@@ -77,7 +78,7 @@ public class WorldHelper
         return states;
     }
 
-    public static Tile getRandomTile(World world, Tile exceptThisTile) {
+    public static Tile getRandomTile(ActualWorld actualWorld, World world, Tile exceptThisTile) {
         Tile tile = null;
         int width = world.getWidth();
         int height = world.getHeight();
@@ -88,24 +89,24 @@ public class WorldHelper
         while (tile == null) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
-            if (world.getActualEnterCost(x, y).top != Integer.MAX_VALUE && (x != expectThisX || y != expectThisY)) {
+            if (actualWorld.getActualEnterCost(x, y).top != Integer.MAX_VALUE && (x != expectThisX || y != expectThisY)) {
                 tile = world.getTiles()[x][y];
             }
         }
         return tile;
     }
 
-    public static WorldView setupWorldView(World world, BufferedImage image, int pixelFactor) {
+    public static WorldView setupWorldView(ActualWorld actualWorld, World world, BufferedImage image, int pixelFactor) {
         WorldView worldView = new WorldView(image);
 
         int worldWidth = world.getWidth();
         int worldHeight = world.getHeight();
         worldView.setSize(worldWidth * pixelFactor + 20, worldHeight * pixelFactor + 50);
 
-       
+
         for (int x = 0; x < worldWidth; ++x) {
             for (int y = 0; y < worldHeight; ++y) {
-                if (world.getActualEnterCost(x, y).top == Integer.MAX_VALUE) {
+                if (actualWorld.getActualEnterCost(x, y).top == Integer.MAX_VALUE) {
                     ImageHelper.setPoint(image, x, y, pixelFactor, Color.WHITE);
                 }
             }
