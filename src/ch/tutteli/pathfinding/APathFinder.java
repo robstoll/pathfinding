@@ -45,6 +45,9 @@ public abstract class APathFinder implements IPathFinder
         queuedTiles.add(tile);
     }
 
+    /**
+     * Check if there is a better through the currentTile for the neighbours etc. 
+     */
     protected void calculateNeighbours() {
         if (world.isNotAtTheTopOfTheMap(currentTile)) {
             calculateTransition(world.new BottomTransition(world.getTileAbove(currentTile)));

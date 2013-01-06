@@ -33,18 +33,17 @@ public class World
 
     public World(ActualWorld theActualWorld, int worldWidth, int worldHeight, int initialCost) {
         actualWorld = theActualWorld;
-        tiles = createTiles(worldWidth, worldHeight, initialCost);
         actions = new Action[worldWidth][worldHeight];
+        createTiles(worldWidth, worldHeight, initialCost);
     }
 
-    private Tile[][] createTiles(int width, int height, int initialCost) {
-        Tile[][] tiles = new Tile[width][height];
+    private void createTiles(int width, int height, int initialCost) {
+        tiles = new Tile[width][height];
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
                 tiles[x][y] = new Tile(x, y, initialCost);
             }
         }
-        return tiles;
     }
 
     public int getWidth() {

@@ -16,10 +16,10 @@
  */
 package ch.tutteli.pathfinding.speedTests;
 
-import ch.tutteli.pathfinding.World;
-import ch.tutteli.pathfinding.Tile;
 import ch.tutteli.pathfinding.Action;
 import ch.tutteli.pathfinding.IPathFinder;
+import ch.tutteli.pathfinding.Tile;
+import ch.tutteli.pathfinding.World;
 import ch.tutteli.pathfinding.utils.IntegerHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,35 +48,43 @@ public class SimpleWalker
     public void walk(Tile start, Tile goal) {
         pathFinder.calculatePath(start, goal);
 
+        //Start from starting point
         Tile tmpTile = start;
 
         while (tmpTile != goal) {
+            //save the different parts of a path in multiple lists
             List<Action> path = new ArrayList<>();
+            
             while (tmpTile != goal) {
+                //Get the stored transition for the tmpTile
                 World.ITransition transition = world.getTransitionAccordingToAction(tmpTile);
+                //Determine the endTile (the tile to which we are walking now)
                 Tile endTile = transition.getEndTile();
-
+                
+                //Determine whether the cost has increased in the meantime. We don't care if the cost has decreased
                 int actualCost = transition.getActualEnterCost();
                 if (actualCost > transition.getViaCost()) {
-
+                    //If it has increased we update via and enter cost and set the current cost to the new value
                     transition.setViaCost(IntegerHelper.plusWithoutOverflow(actualCost, endTile.currentCost));
-                    tmpTile.currentCost = transition.getViaCost();
                     transition.setEnterCost(actualCost);
+                    tmpTile.currentCost = transition.getViaCost();
+                    //Then we quite the while loop and recalculate the path
                     break;
                 } else {
+                    //cost hasn't increased - we add the walked path to the list
                     path.add(transition.getAction());
                 }
                 tmpTile = endTile;
 
             }
-
+            //we add the walked part of the whole path to the whole path stack 
             paths.add(path);
 
-
+            //if we should have reached the goal we quite
             if (tmpTile == goal) {
                 break;
             }
-
+            //recalculate the path and than we continue walking
             pathFinder.recalculatePath(tmpTile);
 
         }

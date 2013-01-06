@@ -88,7 +88,6 @@ public class DStar extends APathFinder implements IPathFinder
 
     /**
      * There is a better path, if current cost of start is bigger than a best cost of a tile in queue
-     *
      * @return
      */
     private boolean thereIsABetterPathInQueue() {
