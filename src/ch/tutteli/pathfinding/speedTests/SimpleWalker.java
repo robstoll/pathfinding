@@ -61,7 +61,7 @@ public class SimpleWalker
 
                     transition.setViaCost(IntegerHelper.plusWithoutOverflow(actualCost, endTile.currentCost));
                     tmpTile.currentCost = transition.getViaCost();
-
+                    transition.setEnterCost(actualCost);
                     break;
                 } else {
                     path.add(transition.getAction());

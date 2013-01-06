@@ -32,6 +32,6 @@ public class PathFinderFactory
     }
 
     public static IPathFinder create(World world) {
-        return new DStar(world);
+        return new AStar(world);
     }
 }
