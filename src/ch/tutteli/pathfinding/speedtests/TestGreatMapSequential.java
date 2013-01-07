@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding.speedTests;
+package ch.tutteli.pathfinding.speedtests;
 
 import ch.tutteli.pathfinding.DStar;
 

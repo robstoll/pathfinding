@@ -25,6 +25,16 @@ import java.util.Map;
  */
 public class ActualWorld
 {
+    private static ActualWorld instance;
+    private ActualWorld(){}
+    
+    public static ActualWorld getInstance(){
+        if(instance==null){
+            instance = new ActualWorld();
+        }
+        return instance;
+    }
+    
     Map<String, Cost> actualEnterCosts = new HashMap<>();
 
     public Cost getActualEnterCost(int x, int y) {

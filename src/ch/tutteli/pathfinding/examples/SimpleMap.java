@@ -44,7 +44,7 @@ public class SimpleMap
         //is used to scale the image on the gui
         int pixelFactor = 100;
         //define the actual world with the corresponding obstacles
-        ActualWorld actualWorld = new ActualWorld();
+        ActualWorld actualWorld = ActualWorld.getInstance();
         WorldHelper.setAsObstacle(actualWorld, 3, 2);
         WorldHelper.setAsObstacle(actualWorld, 2, 1);
         WorldHelper.setAsObstacle(actualWorld, 3, 3);

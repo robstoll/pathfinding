@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding.speedTests;
+package ch.tutteli.pathfinding.speedtests;
 
 import ch.tutteli.pathfinding.ActualWorld;
 import ch.tutteli.pathfinding.DStar;
@@ -22,7 +22,7 @@ import ch.tutteli.pathfinding.IPathFinder;
 import ch.tutteli.pathfinding.Tile;
 import ch.tutteli.pathfinding.World;
 import ch.tutteli.pathfinding.examples.PathFinderFactory;
-import ch.tutteli.pathfinding.examples.TestGreatMapWithBug;
+import ch.tutteli.pathfinding.examples.GreatMap;
 import java.io.IOException;
 
 /**
@@ -36,9 +36,9 @@ public class SpeedTestHelper
     private ActualWorld actualWorld;
 
     public SpeedTestHelper() {
-        actualWorld = new ActualWorld();
+        actualWorld = ActualWorld.getInstance();
 
-        TestGreatMapWithBug.setWalls(actualWorld);
+        GreatMap.setWalls(actualWorld);
         try {
             System.out.println("Press enter to start.");
             System.in.read();

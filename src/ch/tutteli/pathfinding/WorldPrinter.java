@@ -46,7 +46,7 @@ public class WorldPrinter
             }
             for (int x = 0; x < tiles.length; ++x) {
                 Tile tile = tiles[x][y];
-                System.out.print((tile == currentTile ? "o " : "  ") + getCostForPrint(tile.viaCost.top) + "  |");
+                System.out.print((tile == currentTile ? "x " : "  ") + getCostForPrint(tile.viaCost.top) + "  |");
                 secondLine += getCostForPrint(tile.viaCost.left) + " " + getCostForPrint(tile.currentCost) + " " + getCostForPrint(tile.viaCost.right) + "|";
                 thirdLine += getCostForPrint(tile.bestCost) + " " + getCostForPrint(tile.viaCost.bottom) + getActionForPrint(tile) + "|";
             }

@@ -33,7 +33,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class TestGreatMapWithBug
+public class GreatMap
 {
 
     /**
@@ -43,15 +43,16 @@ public class TestGreatMapWithBug
         int worldWidth = 87;
         int worldHeight = 100;
         int pixelFactor = 10;
-        ActualWorld actualWorld = new ActualWorld();
+        ActualWorld actualWorld = ActualWorld.getInstance();
         World world = new World(actualWorld, worldWidth, worldHeight);
 
         setWalls(actualWorld);
 
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
 
-        Tile startTile = world.getTile(56, 71);// WorldHelper.getRandomTile(world, null);
-        Tile endTile = world.getTile(77, 95);// WorldHelper.getRandomTile(world, startTile);
+        Tile startTile = world.getTile(10, 71);
+        Tile endTile = world.getTile(77, 95);
+
 
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
