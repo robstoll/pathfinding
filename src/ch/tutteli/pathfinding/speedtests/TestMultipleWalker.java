@@ -17,7 +17,6 @@
 package ch.tutteli.pathfinding.speedtests;
 
 import ch.tutteli.pathfinding.ActualWorld;
-import ch.tutteli.pathfinding.DStar;
 import ch.tutteli.pathfinding.IPathFinder;
 import ch.tutteli.pathfinding.Tile;
 import ch.tutteli.pathfinding.Walker;
@@ -28,6 +27,8 @@ import ch.tutteli.pathfinding.utils.ImageHelper;
 import ch.tutteli.pathfinding.utils.WorldHelper;
 import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CountDownLatch;
 
@@ -44,7 +45,9 @@ public class TestMultipleWalker
     public static void main(String[] args) throws InterruptedException {
         int worldWidth = 87;
         int worldHeight = 100;
-        int pixelFactor = 10;
+         Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+        Dimension dim = toolkit.getScreenSize();
+        int pixelFactor = (dim.height-50) / worldHeight;
 
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
         World world = new World(ActualWorld.getInstance(), worldWidth, worldHeight);
@@ -96,6 +99,8 @@ public class TestMultipleWalker
                 
                 IPathFinder pathFinder = PathFinderFactory.create(world);
                 Walker walker = new Walker(world, pathFinder, worldView, pixelFactor);
+                walker.useSingleColourLine();
+                walker.useRandomStartColour();
                 walker.walkSilent(startTile, endTile, 20);
             } catch (InterruptedException ex) {
                 System.out.println(ex.getMessage());

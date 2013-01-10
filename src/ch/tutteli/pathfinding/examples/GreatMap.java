@@ -16,9 +16,7 @@
  */
 package ch.tutteli.pathfinding.examples;
 
-import ch.tutteli.pathfinding.AStar;
 import ch.tutteli.pathfinding.ActualWorld;
-import ch.tutteli.pathfinding.DStar;
 import ch.tutteli.pathfinding.IPathFinder;
 import ch.tutteli.pathfinding.Tile;
 import ch.tutteli.pathfinding.Walker;
@@ -27,6 +25,8 @@ import ch.tutteli.pathfinding.utils.ImageHelper;
 import ch.tutteli.pathfinding.utils.WorldHelper;
 import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 /**
@@ -42,7 +42,9 @@ public class GreatMap
     public static void main(String[] args) {
         int worldWidth = 87;
         int worldHeight = 100;
-        int pixelFactor = 10;
+        Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+        Dimension dim = toolkit.getScreenSize();
+        int pixelFactor = (dim.height-50) / worldHeight;
         ActualWorld actualWorld = ActualWorld.getInstance();
         World world = new World(actualWorld, worldWidth, worldHeight);
 

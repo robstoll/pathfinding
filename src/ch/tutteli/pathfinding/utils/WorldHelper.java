@@ -101,7 +101,7 @@ public class WorldHelper
 
         int worldWidth = world.getWidth();
         int worldHeight = world.getHeight();
-        worldView.setSize(worldWidth * pixelFactor + 20, worldHeight * pixelFactor + 50);
+        worldView.setSize(worldWidth * pixelFactor + 9, worldHeight * pixelFactor + 9);
 
 
         for (int x = 0; x < worldWidth; ++x) {

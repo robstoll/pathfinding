@@ -23,6 +23,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -31,7 +32,7 @@ import java.util.Stack;
  */
 public class Walker
 {
-
+    private static Random random = new Random();
     private World world;
     private IPathFinder pathFinder;
     private Stack<List<Action>> paths = new Stack<>();
@@ -39,6 +40,7 @@ public class Walker
     private int pixelFactor;
     private int walkingColorCount = 0;
     private Color[] walkingColors = new Color[]{Color.RED, Color.BLUE, Color.ORANGE, Color.MAGENTA, Color.GRAY, Color.YELLOW};
+    private boolean useMultiColorLine=true;
 
     public Walker(World theWorld, IPathFinder aPathFinder, WorldView theWorldView, int aPixelFactor) {
         world = theWorld;
@@ -69,7 +71,7 @@ public class Walker
         }
 
         Tile tmpTile = start;
-        Color walkingColor = Color.RED;
+        Color walkingColor = walkingColors[walkingColorCount];
 
         while (tmpTile != goal) {
             List<Action> path = new ArrayList<>();
@@ -90,7 +92,9 @@ public class Walker
                     transition.setViaCost(IntegerHelper.plusWithoutOverflow(actualCost, endTile.currentCost));
                     transition.setEnterCost(actualCost);
                     tmpTile.currentCost = transition.getViaCost();
-                    walkingColor = changeWalkingColor();
+                    if(useMultiColorLine){
+                        walkingColor = changeWalkingColor();
+                    }
 
                     break;
                 } else {
@@ -99,7 +103,6 @@ public class Walker
                 tmpTile = endTile;
 
             }
-            ImageHelper.setPoint(image, tmpTile.getPosX(), tmpTile.getPosY(), pixelFactor, Color.RED);
             paths.add(path);
 
 
@@ -118,7 +121,18 @@ public class Walker
             }
         }
     }
+    public void useSingleColourLine(){
+        useMultiColorLine=false;
+    }
+    public void useMultiColourLine(){
+        useMultiColorLine=true;
+    }
 
+    public void useRandomStartColour(){
+        
+        walkingColorCount = random.nextInt(walkingColors.length-1);
+    }
+    
     private Color changeWalkingColor() {
         ++walkingColorCount;
         if (walkingColorCount >= walkingColors.length) {
