@@ -181,8 +181,6 @@ public class World
         public void setEnterCost(int actualCost);
 
         public Action getReverseAction();
-
-        public void setReverseViaCost(int cost);
     }
 
     public abstract class ATransition implements ITransition

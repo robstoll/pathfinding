@@ -28,8 +28,6 @@ import java.util.PriorityQueue;
 public class DStar extends APathFinder implements IPathFinder
 {
 
-    DebugWorld debugWorld = new DebugWorld();
-
     public DStar(World world) {
         super(world);
     }
@@ -129,7 +127,6 @@ public class DStar extends APathFinder implements IPathFinder
             Tile startTile = transition.getStartTile();
             Tile endTile = transition.getEndTile();
             transition.setViaCost(IntegerHelper.plusWithoutOverflow(transition.getEnterCost(), endTile.currentCost));
-//            transition.setReverseViaCost(IntegerHelper.plusWithoutOverflow(transition.getReverseEnterCost(), startTile.currentCost));
 
             if (!visitedTiles.contains(startTile)) {
                 startTile.currentCost = transition.getViaCost();
