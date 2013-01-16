@@ -16,7 +16,10 @@
  */
 package ch.tutteli.pathfinding;
 
+import ch.tutteli.pathfinding.examples.DebugWorld;
 import ch.tutteli.pathfinding.utils.IntegerHelper;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 
 /**
  *
@@ -24,6 +27,8 @@ import ch.tutteli.pathfinding.utils.IntegerHelper;
  */
 public class DStar extends APathFinder implements IPathFinder
 {
+
+    DebugWorld debugWorld = new DebugWorld();
 
     public DStar(World world) {
         super(world);
@@ -70,8 +75,12 @@ public class DStar extends APathFinder implements IPathFinder
         int y = currentTile.getPosY();
         for (World.ITransition transition : transitions) {
             if (transition.hasBetterPath()) {
-                currentTile.currentCost = transition.getViaCost();
-                world.setAction(x, y, transition.getAction());
+                if (visitedTiles.contains(transition.getEndTile())) {
+                    currentTile.currentCost = transition.getViaCost();
+                    world.setAction(x, y, transition.getAction());
+                } else {
+                    throw new RuntimeException();
+                }
             }
         }
     }
@@ -80,14 +89,27 @@ public class DStar extends APathFinder implements IPathFinder
     public void recalculatePath(Tile currentStart) {
         start = currentStart;
         addToQueue(currentStart);
-        while (thereIsABetterPathInQueue()) {
-            stentzsAlgorithm();
+
+        int maxCost = world.getWidth() * world.getHeight() / 10 * 8;
+        try {
+            while (thereIsABetterPathInQueue()) {
+                stentzsAlgorithm();
+                // we assume that something is wrong when currentTile.currentCost is higher than 
+                // the cost to walk 80% of the tiles
+                if (currentTile.currentCost != Integer.MAX_VALUE && currentTile.currentCost > maxCost) {
+                    throw new RuntimeException();
+                }
+            }
+        } catch (RuntimeException e) {
+            reset();
+            calculatePath(start, goal);
         }
 
     }
 
     /**
      * There is a better path, if current cost of start is bigger than a best cost of a tile in queue
+     *
      * @return
      */
     private boolean thereIsABetterPathInQueue() {
@@ -103,11 +125,12 @@ public class DStar extends APathFinder implements IPathFinder
 
     @Override
     protected void calculateTransition(World.ITransition transition) {
-        if (transition.isNotAtTheCorrespondingBorder() && transition.isTransitFree()) {
+        if (transition.isTransitFree()) {
             Tile startTile = transition.getStartTile();
             Tile endTile = transition.getEndTile();
             transition.setViaCost(IntegerHelper.plusWithoutOverflow(transition.getEnterCost(), endTile.currentCost));
-            
+//            transition.setReverseViaCost(IntegerHelper.plusWithoutOverflow(transition.getReverseEnterCost(), startTile.currentCost));
+
             if (!visitedTiles.contains(startTile)) {
                 startTile.currentCost = transition.getViaCost();
                 startTile.bestCost = startTile.currentCost;
@@ -122,7 +145,8 @@ public class DStar extends APathFinder implements IPathFinder
                 takeViaInsteadOfCurrentAction(transition);
             }
 
-            if (visitedTiles.contains(startTile) && !queuedTiles.contains(startTile) && !isActionPointToEndTile(transition) && transition.getEndTileReverseCost() < endTile.currentCost && endTile.currentCost > endTile.bestCost) {
+            if (visitedTiles.contains(startTile) && !queuedTiles.contains(startTile) && !isActionPointToEndTile(transition) && transition.getReverseEnterCost() < endTile.currentCost && endTile.currentCost > endTile.bestCost) {
+                startTile.bestCost = startTile.currentCost;
                 addToQueue(startTile);
             }
         }
@@ -143,11 +167,18 @@ public class DStar extends APathFinder implements IPathFinder
         if (endTile.currentCost == endTile.bestCost) {
             world.setAction(startTile, transition.getAction());
             startTile.currentCost = transition.getViaCost();
-            startTile.bestCost = transition.getViaCost();
+            startTile.bestCost = startTile.currentCost;
             addToQueue(startTile);
         } else {
             endTile.bestCost = endTile.currentCost;
             addToQueue(endTile);
         }
+    }
+
+    @Override
+    public void reset() {
+        world.resetTiles();
+        queuedTiles = new PriorityQueue<>();
+        visitedTiles = new HashSet<>();
     }
 }

@@ -39,10 +39,9 @@ public abstract class APathFinder implements IPathFinder
     }
 
     protected void addToQueue(Tile tile) {
-        if (queuedTiles.contains(tile)) {
-            queuedTiles.remove(tile);
+        if (!queuedTiles.contains(tile)) {
+            queuedTiles.add(tile);
         }
-        queuedTiles.add(tile);
     }
 
     /**

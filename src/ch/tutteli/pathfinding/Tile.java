@@ -72,4 +72,9 @@ public class Tile implements Comparable<Tile>
     public boolean canBeEnteredFromTheRight() {
         return enterCost.right < Integer.MAX_VALUE;
     }
+    
+    @Override
+    public String toString(){
+        return posX+"/"+posY+" b: "+bestCost+" c:"+currentCost;
+    }
 }

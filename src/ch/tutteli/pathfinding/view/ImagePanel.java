@@ -14,18 +14,32 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding;
+package ch.tutteli.pathfinding.view;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import javax.swing.JPanel;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public interface IPathFinder
+public class ImagePanel extends JPanel
 {
 
-    void calculatePath(Tile start, Tile goal);
+    private BufferedImage image;
 
-    void recalculatePath(Tile start);
+    public ImagePanel(BufferedImage theImage) {
+        image = theImage;
+    }
 
-    public void reset();
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, this);
+    }
+
 }

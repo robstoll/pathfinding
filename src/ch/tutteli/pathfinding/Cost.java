@@ -37,4 +37,9 @@ public class Cost
         left = costLeft;
         right = costRight;
     }
+    
+    @Override
+    public String toString(){
+        return "t: "+top+" b:"+bottom+" l:"+left+" r:"+right;
+    }
 }

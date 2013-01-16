@@ -19,6 +19,7 @@ package ch.tutteli.pathfinding.view;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import javax.swing.JPanel;
 
 /**
  *
@@ -27,23 +28,41 @@ import java.awt.image.BufferedImage;
 public class WorldView extends javax.swing.JFrame
 {
 
-    private BufferedImage image;
+    private ImagePanel imagePanel;
 
     /**
      * Creates new form World
      */
     public WorldView(BufferedImage worldAsImage) {
         initComponents();
-        image = worldAsImage;
+        init(worldAsImage);
+    }
+
+    private void init(BufferedImage worldAsImage) {
+//        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        imagePanel = new ImagePanel(worldAsImage);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(imagePanel);
+        imagePanel.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 681, Short.MAX_VALUE));
+        jPanel1Layout.setVerticalGroup(
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(0, 631, Short.MAX_VALUE));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(imagePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(imagePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        pack();
     }
 
     public BufferedImage getImage() {
-        return image;
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        g.drawImage(image, 0, 0, this);
+        return imagePanel.getImage();
     }
 
     /**
@@ -69,7 +88,6 @@ public class WorldView extends javax.swing.JFrame
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }

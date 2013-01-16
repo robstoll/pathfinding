@@ -37,6 +37,23 @@ public class World
         createTiles(worldWidth, worldHeight, initialCost);
     }
 
+    public void resetTiles() {
+        int worldWidth = tiles.length;
+        int worldHeight = tiles[0].length;
+
+        actions = new Action[worldWidth][worldHeight];
+
+        for (int x = 0; x < worldWidth; ++x) {
+            for (int y = 0; y < worldHeight; ++y) {
+                tiles[x][y].bestCost = 0;
+                tiles[x][y].currentCost = 0;
+                tiles[x][y].viaCost = new Cost(0);
+                actions[x][y] = null;
+            }
+        }
+
+    }
+
     private void createTiles(int width, int height, int initialCost) {
         tiles = new Tile[width][height];
         for (int x = 0; x < width; ++x) {
@@ -149,7 +166,7 @@ public class World
 
         int getActualEnterCost();
 
-        int getEndTileReverseCost();
+        int getReverseEnterCost();
 
         boolean hasBetterPath();
 
@@ -162,6 +179,10 @@ public class World
         boolean isTransitFree();
 
         public void setEnterCost(int actualCost);
+
+        public Action getReverseAction();
+
+        public void setReverseViaCost(int cost);
     }
 
     public abstract class ATransition implements ITransition
@@ -222,8 +243,18 @@ public class World
         }
 
         @Override
+        public void setReverseViaCost(int cost) {
+            endTile.viaCost.bottom = cost;
+        }
+
+        @Override
         public Action getAction() {
             return Action.GoUp;
+        }
+
+        @Override
+        public Action getReverseAction() {
+            return Action.GoDown;
         }
 
         @Override
@@ -247,7 +278,7 @@ public class World
         }
 
         @Override
-        public int getEndTileReverseCost() {
+        public int getReverseEnterCost() {
             return endTile.viaCost.bottom;
         }
 
@@ -275,8 +306,18 @@ public class World
         }
 
         @Override
+        public void setReverseViaCost(int cost) {
+            endTile.viaCost.top = cost;
+        }
+
+        @Override
         public Action getAction() {
             return Action.GoDown;
+        }
+
+        @Override
+        public Action getReverseAction() {
+            return Action.GoUp;
         }
 
         @Override
@@ -300,9 +341,10 @@ public class World
         }
 
         @Override
-        public int getEndTileReverseCost() {
+        public int getReverseEnterCost() {
             return endTile.viaCost.top;
         }
+
         @Override
         public void setEnterCost(int actualCost) {
             endTile.enterCost.top = actualCost;
@@ -327,8 +369,18 @@ public class World
         }
 
         @Override
+        public void setReverseViaCost(int cost) {
+            endTile.viaCost.right = cost;
+        }
+
+        @Override
         public Action getAction() {
             return Action.GoLeft;
+        }
+
+        @Override
+        public Action getReverseAction() {
+            return Action.GoRight;
         }
 
         @Override
@@ -352,9 +404,10 @@ public class World
         }
 
         @Override
-        public int getEndTileReverseCost() {
+        public int getReverseEnterCost() {
             return endTile.viaCost.right;
         }
+
         @Override
         public void setEnterCost(int actualCost) {
             endTile.enterCost.right = actualCost;
@@ -379,8 +432,18 @@ public class World
         }
 
         @Override
+        public void setReverseViaCost(int cost) {
+            endTile.viaCost.left = cost;
+        }
+
+        @Override
         public Action getAction() {
             return Action.GoRight;
+        }
+
+        @Override
+        public Action getReverseAction() {
+            return Action.GoLeft;
         }
 
         @Override
@@ -404,9 +467,10 @@ public class World
         }
 
         @Override
-        public int getEndTileReverseCost() {
+        public int getReverseEnterCost() {
             return endTile.viaCost.left;
         }
+
         @Override
         public void setEnterCost(int actualCost) {
             endTile.enterCost.left = actualCost;

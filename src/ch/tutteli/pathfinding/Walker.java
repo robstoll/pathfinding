@@ -32,6 +32,7 @@ import java.util.Stack;
  */
 public class Walker
 {
+
     private static Random random = new Random();
     private World world;
     private IPathFinder pathFinder;
@@ -40,7 +41,7 @@ public class Walker
     private int pixelFactor;
     private int walkingColorCount = 0;
     private Color[] walkingColors = new Color[]{Color.RED, Color.BLUE, Color.ORANGE, Color.MAGENTA, Color.GRAY, Color.YELLOW};
-    private boolean useMultiColorLine=true;
+    private boolean useMultiColorLine = true;
 
     public Walker(World theWorld, IPathFinder aPathFinder, WorldView theWorldView, int aPixelFactor) {
         world = theWorld;
@@ -72,10 +73,11 @@ public class Walker
 
         Tile tmpTile = start;
         Color walkingColor = walkingColors[walkingColorCount];
-
+        BufferedImage image = worldView.getImage();
+        
         while (tmpTile != goal) {
             List<Action> path = new ArrayList<>();
-            BufferedImage image = worldView.getImage();
+            List<Tile> visited = new ArrayList<>();
             while (tmpTile != goal) {
                 ImageHelper.setPoint(image, tmpTile.getPosX(), tmpTile.getPosY(), pixelFactor, walkingColor);
                 worldView.repaint();
@@ -89,22 +91,28 @@ public class Walker
                 int actualCost = transition.getActualEnterCost();
                 if (actualCost > transition.getViaCost()) {
                     ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.CYAN);
+                    worldView.repaint();
                     transition.setViaCost(IntegerHelper.plusWithoutOverflow(actualCost, endTile.currentCost));
                     transition.setEnterCost(actualCost);
                     tmpTile.currentCost = transition.getViaCost();
-                    if(useMultiColorLine){
+                    if (useMultiColorLine) {
                         walkingColor = changeWalkingColor();
                     }
 
                     break;
-                } else {
-                    path.add(transition.getAction());
+                } else if (visited.contains(endTile)){
+                    pathFinder.reset();
+                    pathFinder.calculatePath(tmpTile, goal);
                 }
+                else {
+                    path.add(transition.getAction());
+                    visited.add(tmpTile);
+                }
+
                 tmpTile = endTile;
 
             }
             paths.add(path);
-
 
             if (isVerbose) {
                 printer.printPath(path);
@@ -121,18 +129,20 @@ public class Walker
             }
         }
     }
-    public void useSingleColourLine(){
-        useMultiColorLine=false;
-    }
-    public void useMultiColourLine(){
-        useMultiColorLine=true;
+
+    public void useSingleColourLine() {
+        useMultiColorLine = false;
     }
 
-    public void useRandomStartColour(){
-        
-        walkingColorCount = random.nextInt(walkingColors.length-1);
+    public void useMultiColourLine() {
+        useMultiColorLine = true;
     }
-    
+
+    public void useRandomStartColour() {
+
+        walkingColorCount = random.nextInt(walkingColors.length - 1);
+    }
+
     private Color changeWalkingColor() {
         ++walkingColorCount;
         if (walkingColorCount >= walkingColors.length) {

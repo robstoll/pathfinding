@@ -79,23 +79,15 @@ public class AStar extends APathFinder implements IPathFinder
 
     @Override
     public void recalculatePath(Tile newStart) {
-        resetAStar();
+        reset();
         goal = newStart;
         calculatePath();
     }
 
-    private void resetAStar() {
+    @Override
+    public void reset() {
+        world.resetTiles();
         queuedTiles = new PriorityQueue<>();
         visitedTiles = new HashSet<>();
-        Tile[][] tiles = world.getTiles();
-        int height = world.getHeight();
-        int width = world.getWidth();
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
-                tiles[x][y].currentCost = 0;
-                tiles[x][y].bestCost = 0;
-                world.setAction(x, y,null);
-            }
-        }
     }
 }

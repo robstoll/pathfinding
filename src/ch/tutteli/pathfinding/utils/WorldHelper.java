@@ -22,6 +22,8 @@ import ch.tutteli.pathfinding.Tile;
 import ch.tutteli.pathfinding.World;
 import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -64,18 +66,19 @@ public class WorldHelper
         }
     }
 
-    public static Tile[][] createTiles(int width, int height) {
-        return createTiles(width, height, 1);
-    }
-
-    public static Tile[][] createTiles(int width, int height, int initialCost) {
-        Tile[][] states = new Tile[width][height];
-        for (int x = 0; x < width; ++x) {
-            for (int y = 0; y < height; ++y) {
-                states[x][y] = new Tile(x, y);
-            }
+    public static int getPixelFactor(int worldWidth, int worldHeight) {
+        //is used to scale the image on the gui
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension dim = toolkit.getScreenSize();
+        int pixelFactor = (dim.height - 70) / worldHeight;
+        int pixelFactor2 = (dim.width - 30) / worldWidth;
+        if (pixelFactor2 < pixelFactor) {
+            pixelFactor = pixelFactor2;
         }
-        return states;
+        if (pixelFactor > 100) {
+            pixelFactor = 100;
+        }
+        return pixelFactor;
     }
 
     public static Tile getRandomTile(World world, Tile exceptThisTile) {
@@ -89,7 +92,7 @@ public class WorldHelper
         while (tile == null) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
-            if (getActualEnterCost(world,x, y).top != Integer.MAX_VALUE && (x != expectThisX || y != expectThisY)) {
+            if (getActualEnterCost(world, x, y).top != Integer.MAX_VALUE && (x != expectThisX || y != expectThisY)) {
                 tile = world.getTiles()[x][y];
             }
         }
@@ -101,22 +104,21 @@ public class WorldHelper
 
         int worldWidth = world.getWidth();
         int worldHeight = world.getHeight();
-        worldView.setSize(worldWidth * pixelFactor + 9, worldHeight * pixelFactor + 9);
+        worldView.setSize(worldWidth * pixelFactor + 19, worldHeight * pixelFactor + 39);
 
 
         for (int x = 0; x < worldWidth; ++x) {
             for (int y = 0; y < worldHeight; ++y) {
-                if (getActualEnterCost(world,x, y).top == Integer.MAX_VALUE) {
+                if (getActualEnterCost(world, x, y).top == Integer.MAX_VALUE) {
                     ImageHelper.setPoint(image, x, y, pixelFactor, Color.WHITE);
                 }
             }
         }
         return worldView;
     }
-    
-    public static Cost getActualEnterCost(World world, int x, int y){
-         Cost cost = world.getActualWorld().getActualEnterCost(x, y);
-         return cost != null ? cost : world.getTile(x, y).enterCost;
+
+    public static Cost getActualEnterCost(World world, int x, int y) {
+        Cost cost = world.getActualWorld().getActualEnterCost(x, y);
+        return cost != null ? cost : world.getTile(x, y).enterCost;
     }
-           
 }
