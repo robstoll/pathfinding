@@ -241,11 +241,6 @@ public class World
         }
 
         @Override
-        public void setReverseViaCost(int cost) {
-            endTile.viaCost.bottom = cost;
-        }
-
-        @Override
         public Action getAction() {
             return Action.GoUp;
         }
@@ -301,11 +296,6 @@ public class World
         @Override
         public void setViaCost(int cost) {
             startTile.viaCost.bottom = cost;
-        }
-
-        @Override
-        public void setReverseViaCost(int cost) {
-            endTile.viaCost.top = cost;
         }
 
         @Override
@@ -367,11 +357,6 @@ public class World
         }
 
         @Override
-        public void setReverseViaCost(int cost) {
-            endTile.viaCost.right = cost;
-        }
-
-        @Override
         public Action getAction() {
             return Action.GoLeft;
         }
@@ -427,11 +412,6 @@ public class World
         @Override
         public void setViaCost(int cost) {
             startTile.viaCost.right = cost;
-        }
-
-        @Override
-        public void setReverseViaCost(int cost) {
-            endTile.viaCost.left = cost;
         }
 
         @Override

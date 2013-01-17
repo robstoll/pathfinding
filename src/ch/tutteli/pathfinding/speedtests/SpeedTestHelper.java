@@ -17,7 +17,7 @@
 package ch.tutteli.pathfinding.speedtests;
 
 import ch.tutteli.pathfinding.ActualWorld;
-import ch.tutteli.pathfinding.DStar;
+import ch.tutteli.pathfinding.examples.bugs.DStarLaValle;
 import ch.tutteli.pathfinding.IPathFinder;
 import ch.tutteli.pathfinding.Tile;
 import ch.tutteli.pathfinding.World;

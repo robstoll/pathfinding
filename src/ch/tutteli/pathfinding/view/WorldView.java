@@ -33,9 +33,10 @@ public class WorldView extends javax.swing.JFrame
     /**
      * Creates new form World
      */
-    public WorldView(BufferedImage worldAsImage) {
+    public WorldView(String title, BufferedImage worldAsImage) {
         initComponents();
         init(worldAsImage);
+        setTitle(title);
     }
 
     private void init(BufferedImage worldAsImage) {

@@ -16,6 +16,7 @@
  */
 package ch.tutteli.pathfinding;
 
+import ch.tutteli.pathfinding.examples.bugs.DebugWorld;
 import ch.tutteli.pathfinding.utils.ImageHelper;
 import ch.tutteli.pathfinding.utils.IntegerHelper;
 import ch.tutteli.pathfinding.view.WorldView;
@@ -33,6 +34,7 @@ import java.util.Stack;
 public class Walker
 {
 
+    DebugWorld debugWorld = new DebugWorld();
     private static Random random = new Random();
     private World world;
     private IPathFinder pathFinder;
@@ -74,17 +76,23 @@ public class Walker
         Tile tmpTile = start;
         Color walkingColor = walkingColors[walkingColorCount];
         BufferedImage image = worldView.getImage();
-        
+
         while (tmpTile != goal) {
             List<Action> path = new ArrayList<>();
             List<Tile> visited = new ArrayList<>();
             while (tmpTile != goal) {
+                if (visited.contains(tmpTile)) {
+                    visited = new ArrayList<>();
+                    pathFinder.reset();
+                    pathFinder.calculatePath(tmpTile, goal);
+                }
                 ImageHelper.setPoint(image, tmpTile.getPosX(), tmpTile.getPosY(), pixelFactor, walkingColor);
                 worldView.repaint();
                 try {
                     Thread.sleep(sleepInMilliseconds);
                 } catch (InterruptedException ex) {
                 }
+
                 World.ITransition transition = world.getTransitionAccordingToAction(tmpTile);
                 Tile endTile = transition.getEndTile();
 
@@ -100,11 +108,7 @@ public class Walker
                     }
 
                     break;
-                } else if (visited.contains(endTile)){
-                    pathFinder.reset();
-                    pathFinder.calculatePath(tmpTile, goal);
-                }
-                else {
+                } else {
                     path.add(transition.getAction());
                     visited.add(tmpTile);
                 }
@@ -141,6 +145,15 @@ public class Walker
     public void useRandomStartColour() {
 
         walkingColorCount = random.nextInt(walkingColors.length - 1);
+    }
+
+    public void setWalkinColors(Color[] colors) {
+        walkingColors = colors;
+    }
+
+    public void setWalkingColor(Color color) {
+        walkingColors[0] = color;
+        walkingColorCount = 0;
     }
 
     private Color changeWalkingColor() {

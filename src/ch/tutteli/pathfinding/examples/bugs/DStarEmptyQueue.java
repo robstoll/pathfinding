@@ -14,8 +14,12 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding;
+package ch.tutteli.pathfinding.examples.bugs;
 
+import ch.tutteli.pathfinding.APathFinder;
+import ch.tutteli.pathfinding.IPathFinder;
+import ch.tutteli.pathfinding.Tile;
+import ch.tutteli.pathfinding.World;
 import ch.tutteli.pathfinding.utils.IntegerHelper;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -24,10 +28,10 @@ import java.util.PriorityQueue;
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class DStar extends APathFinder implements IPathFinder
+public class DStarEmptyQueue extends APathFinder implements IPathFinder
 {
 
-    public DStar(World world) {
+    public DStarEmptyQueue(World world) {
         super(world);
     }
 
@@ -40,7 +44,6 @@ public class DStar extends APathFinder implements IPathFinder
 
     private void dijkstraBackward() {
         addToQueue(goal);
-        currentTile = null;
         while (currentTile != start) {
             stentzsAlgorithm();
         }
@@ -73,12 +76,8 @@ public class DStar extends APathFinder implements IPathFinder
         int y = currentTile.getPosY();
         for (World.ITransition transition : transitions) {
             if (transition.hasBetterPath()) {
-                if (visitedTiles.contains(transition.getEndTile())) {
-                    currentTile.currentCost = transition.getViaCost();
-                    world.setAction(x, y, transition.getAction());
-                } else {
-                    throw new DStarCalculationException();
-                }
+                currentTile.currentCost = transition.getViaCost();
+                world.setAction(x, y, transition.getAction());
             }
         }
     }
@@ -88,21 +87,9 @@ public class DStar extends APathFinder implements IPathFinder
         start = currentStart;
         addToQueue(currentStart);
 
-        int maxCost = world.getWidth() * world.getHeight() / 10 * 8;
-        try {
-            while (thereIsABetterPathInQueue()) {
-                stentzsAlgorithm();
-                // we assume that something is wrong when currentTile.currentCost is higher than 
-                // the cost to walk 80% of the tiles
-                if (currentTile.currentCost != Integer.MAX_VALUE && currentTile.currentCost > maxCost) {
-                    throw new DStarCalculationException();
-                }
-            }
-        } catch (DStarCalculationException e) {
-            reset();
-            calculatePath(start, goal);
+        while (thereIsABetterPathInQueue()) {
+            stentzsAlgorithm();
         }
-
     }
 
     /**

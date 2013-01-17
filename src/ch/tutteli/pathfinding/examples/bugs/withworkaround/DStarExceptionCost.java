@@ -14,8 +14,9 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding;
+package ch.tutteli.pathfinding.examples.bugs.withworkaround;
 
+import ch.tutteli.pathfinding.*;
 import ch.tutteli.pathfinding.utils.IntegerHelper;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -24,10 +25,10 @@ import java.util.PriorityQueue;
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class DStar extends APathFinder implements IPathFinder
+public class DStarExceptionCost extends APathFinder implements IPathFinder
 {
 
-    public DStar(World world) {
+    public DStarExceptionCost(World world) {
         super(world);
     }
 
@@ -111,7 +112,14 @@ public class DStar extends APathFinder implements IPathFinder
      * @return
      */
     private boolean thereIsABetterPathInQueue() {
-        return queuedTiles.size() > 0;
+        boolean betterPathFound = false;
+        for (Tile tile : queuedTiles) {
+            if (start.currentCost > tile.bestCost) {
+                betterPathFound = true;
+                break;
+            }
+        }
+        return betterPathFound;
     }
 
     @Override

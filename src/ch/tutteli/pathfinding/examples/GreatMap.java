@@ -42,9 +42,9 @@ public class GreatMap
     public static void main(String[] args) {
         int worldWidth = 87;
         int worldHeight = 100;
-        Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension dim = toolkit.getScreenSize();
-        int pixelFactor = (dim.height-60) / worldHeight;
+        int pixelFactor = (dim.height - 60) / worldHeight;
         ActualWorld actualWorld = ActualWorld.getInstance();
         World world = new World(actualWorld, worldWidth, worldHeight);
 
@@ -52,14 +52,15 @@ public class GreatMap
 
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
 
-        Tile startTile = world.getTile(7, 7);
+        Tile startTile = world.getTile(3, 3);
         Tile endTile = world.getTile(77, 95);
+
 
 
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
 
-        WorldView worldView = WorldHelper.setupWorldView(world, image, pixelFactor);
+        WorldView worldView = WorldHelper.setupWorldView("GreatMap", world, image, pixelFactor);
         worldView.setVisible(true);
         try {
             Thread.sleep(2000);
@@ -91,7 +92,7 @@ public class GreatMap
         WorldHelper.horizontalWall(actualWorld, 62, 26, 50);
         WorldHelper.horizontalWall(actualWorld, 75, 16, 74);
         WorldHelper.horizontalWall(actualWorld, 81, 6, 24);
-        WorldHelper.horizontalWall(actualWorld, 83, 47, 87);
+        WorldHelper.horizontalWall(actualWorld, 83, 47, 86);
         WorldHelper.horizontalWall(actualWorld, 89, 71, 84);
         WorldHelper.horizontalWall(actualWorld, 91, 36, 48);
         WorldHelper.horizontalWall(actualWorld, 92, 9, 23);

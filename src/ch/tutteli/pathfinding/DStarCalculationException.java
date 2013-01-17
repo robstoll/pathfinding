@@ -14,26 +14,13 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding.examples;
-
-import ch.tutteli.pathfinding.AStar;
-import ch.tutteli.pathfinding.DStar;
-import ch.tutteli.pathfinding.IPathFinder;
-import ch.tutteli.pathfinding.World;
-import ch.tutteli.pathfinding.examples.bugs.DStarKlesk;
-import ch.tutteli.pathfinding.examples.bugs.DStarLaValle;
+package ch.tutteli.pathfinding;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class PathFinderFactory
+public class DStarCalculationException extends RuntimeException
 {
-
-    private PathFinderFactory() {
-    }
-
-    public static IPathFinder create(World world) {
-        return new DStarKlesk(world);
-    }
+    
 }

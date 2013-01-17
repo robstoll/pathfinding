@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -45,20 +46,19 @@ public class TestMultipleWalker
     public static void main(String[] args) throws InterruptedException {
         int worldWidth = 87;
         int worldHeight = 100;
-         Toolkit toolkit =  Toolkit.getDefaultToolkit ();
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension dim = toolkit.getScreenSize();
-        int pixelFactor = (dim.height-50) / worldHeight;
+        int pixelFactor = (dim.height - 50) / worldHeight;
 
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
         World world = new World(ActualWorld.getInstance(), worldWidth, worldHeight);
         GreatMap.setWalls(ActualWorld.getInstance());
-        WorldView worldView = WorldHelper.setupWorldView(world, image, pixelFactor);
+        WorldView worldView = WorldHelper.setupWorldView("TestMultipleWalker", world, image, pixelFactor);
         worldView.setVisible(true);
         CountDownLatch startSignal = new CountDownLatch(1);
-        for (int i = 1; i <= 60; ++i) {
-            
-                new Thread(new Tester(startSignal, worldView, image)).start();
-            
+        for (int i = 1; i <= 100; ++i) {
+            new Thread(new Tester(i, startSignal, worldView, image)).start();
+
         }
         Thread.sleep(2000);
         startSignal.countDown();
@@ -67,17 +67,19 @@ public class TestMultipleWalker
     private static class Tester implements Runnable
     {
 
-        CountDownLatch startSignal;
-        SpeedTestHelper helper;
-        BufferedImage image;
-        WorldView worldView;
+        private static Random random = new Random();
+        private CountDownLatch startSignal;
+        private SpeedTestHelper helper;
+        private BufferedImage image;
+        private WorldView worldView;
+        private int number;
 
-        Tester(CountDownLatch theStartSignal, WorldView aWorldView, BufferedImage bufferedImage) {
+        Tester(int myNumber, CountDownLatch theStartSignal, WorldView aWorldView, BufferedImage bufferedImage) {
+            number = myNumber;
             startSignal = theStartSignal;
 
             worldView = aWorldView;
             image = bufferedImage;
-
         }
 
         @Override
@@ -88,24 +90,24 @@ public class TestMultipleWalker
                 int worldHeight = 100;
                 int pixelFactor = 10;
                 World world = new World(ActualWorld.getInstance(), worldWidth, worldHeight);
-                
+
                 Tile startTile = WorldHelper.getRandomTile(world, null);
                 Tile endTile = WorldHelper.getRandomTile(world, startTile);
-                
+                System.out.println("walker " + number + " startTile: " + startTile + " -- endTile: " + endTile);
                 //draw the start and end point to the buffer image
                 ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
                 ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
                 worldView.repaint();
-                
+
                 IPathFinder pathFinder = PathFinderFactory.create(world);
                 Walker walker = new Walker(world, pathFinder, worldView, pixelFactor);
                 walker.useSingleColourLine();
-                walker.useRandomStartColour();
+                walker.setWalkingColor(new Color(random.nextInt(255), number, random.nextInt(255)));
                 walker.walkSilent(startTile, endTile, 20);
+                System.out.println("walker " + number + " at goal tile.");
             } catch (InterruptedException ex) {
                 System.out.println(ex.getMessage());
             } finally {
-                
             }
 
         }

@@ -99,8 +99,8 @@ public class WorldHelper
         return tile;
     }
 
-    public static WorldView setupWorldView(World world, BufferedImage image, int pixelFactor) {
-        WorldView worldView = new WorldView(image);
+    public static WorldView setupWorldView(String title, World world, BufferedImage image, int pixelFactor) {
+        WorldView worldView = new WorldView(title, image);
 
         int worldWidth = world.getWidth();
         int worldHeight = world.getHeight();

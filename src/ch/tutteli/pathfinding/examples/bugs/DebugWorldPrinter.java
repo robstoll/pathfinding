@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding.examples;
+package ch.tutteli.pathfinding.examples.bugs;
 
 import ch.tutteli.pathfinding.*;
 import java.util.List;

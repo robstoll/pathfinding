@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding.examples;
+package ch.tutteli.pathfinding.examples.bugs;
 
 import ch.tutteli.pathfinding.ActualWorld;
 import ch.tutteli.pathfinding.IPathFinder;
@@ -25,15 +25,13 @@ import ch.tutteli.pathfinding.utils.ImageHelper;
 import ch.tutteli.pathfinding.utils.WorldHelper;
 import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class BugMap
+public class LittleMapLaValle
 {
 
     /**
@@ -45,49 +43,46 @@ public class BugMap
         int worldHeight = 10;
         //is used to scale the image on the gui
         int pixelFactor = WorldHelper.getPixelFactor(worldWidth, worldHeight);
-        if(pixelFactor>50) {
-            pixelFactor=50;
+        if (pixelFactor > 50) {
+            pixelFactor = 50;
         }
         //define the actual world with the corresponding obstacles
         ActualWorld actualWorld = ActualWorld.getInstance();
-        WorldHelper.horizontalWall(actualWorld,5, 1, 20);
-        
-        
+        WorldHelper.horizontalWall(actualWorld, 5, 1, 20);
 
         //A world is used by every bot. A world of a bot does not necessarily know every actual obstacle
-        World world = new World(actualWorld,worldWidth,worldHeight);
-        
+        World world = new World(actualWorld, worldWidth, worldHeight);
+
         //buffer image which is used later on on the gui to represent the world
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
 
         //define start and end point
-        Tile startTile = world.getTile(8,0);
-        Tile endTile =  world.getTile(8,8);
+        Tile startTile = world.getTile(8, 0);
+        Tile endTile = world.getTile(8, 8);
 
         //draw the start and end point to the buffer image
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
-        
+
         //the gui with the world
-        WorldView worldView = WorldHelper.setupWorldView(world, image, pixelFactor);
+        WorldView worldView = WorldHelper.setupWorldView("LittleMapLaValle", world, image, pixelFactor);
         worldView.setVisible(true);
 
-        //It is manually set in PathFinderFactory which algorithm will be used - either D* or A*
-        IPathFinder pathFinder = PathFinderFactory.create(world);
-        
+        IPathFinder pathFinder = new DStarLaValle(world);
+
         //A walker used to walk from start to end
         Walker walker = new Walker(world, pathFinder, worldView, pixelFactor);
-        
+
         //we wait a short time thus the user can find the start and end point
         try {
             Thread.sleep(500);
         } catch (InterruptedException ex) {
         }
-        
+
         //The walker will now use the path finding algorithm to determine the shortest path and walk along.
         //If the cost changes it recalculates the path using the same path finding algorithm as before
         walker.walkSilent(startTile, endTile, 20);
-        
+
 
     }
 }

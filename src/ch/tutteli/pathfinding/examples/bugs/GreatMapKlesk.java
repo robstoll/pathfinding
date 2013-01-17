@@ -14,76 +14,61 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding.examples;
+package ch.tutteli.pathfinding.examples.bugs;
 
 import ch.tutteli.pathfinding.ActualWorld;
 import ch.tutteli.pathfinding.IPathFinder;
 import ch.tutteli.pathfinding.Tile;
 import ch.tutteli.pathfinding.Walker;
 import ch.tutteli.pathfinding.World;
+import ch.tutteli.pathfinding.examples.GreatMap;
 import ch.tutteli.pathfinding.utils.ImageHelper;
 import ch.tutteli.pathfinding.utils.WorldHelper;
 import ch.tutteli.pathfinding.view.WorldView;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class SimpleMap
+public class GreatMapKlesk
 {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //defining the world with and height
-        int worldWidth = 6;
-        int worldHeight = 6;
-        //is used to scale the image on the gui
-        int pixelFactor = 100;
-        //define the actual world with the corresponding obstacles
+        int worldWidth = 87;
+        int worldHeight = 100;
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension dim = toolkit.getScreenSize();
+        int pixelFactor = (dim.height - 60) / worldHeight;
         ActualWorld actualWorld = ActualWorld.getInstance();
-        WorldHelper.setAsObstacle(actualWorld, 3, 2);
-        WorldHelper.setAsObstacle(actualWorld, 2, 1);
-        WorldHelper.setAsObstacle(actualWorld, 3, 3);
-        WorldHelper.setAsObstacle(actualWorld, 2, 4);
-
-        //A world is used by every bot. A world of a bot does not necessarily know every actual obstacle
         World world = new World(actualWorld, worldWidth, worldHeight);
 
-        //buffer image which is used later on on the gui to represent the world
+        GreatMap.setWalls(actualWorld);
+
         BufferedImage image = new BufferedImage(worldWidth * pixelFactor, worldHeight * pixelFactor, BufferedImage.TYPE_INT_RGB);
 
-        //define start and end point
-        Tile startTile = world.getTile(0, 2);
-        Tile endTile = world.getTile(5, 2);
+        Tile startTile = world.getTile(27, 57);
+        Tile endTile = world.getTile(16, 13);
 
-        //draw the start and end point to the buffer image
+
         ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
         ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
 
-        //the gui with the world
-        WorldView worldView = WorldHelper.setupWorldView("SimpleMap", world, image, pixelFactor);
+        WorldView worldView = WorldHelper.setupWorldView("GreatMapKlesk", world, image, pixelFactor);
         worldView.setVisible(true);
-
-        //It is manually set in PathFinderFactory which algorithm will be used - either D* or A*
-        IPathFinder pathFinder = PathFinderFactory.create(world);
-
-        //A walker used to walk from start to end
-        Walker walker = new Walker(world, pathFinder, worldView, pixelFactor);
-
-        //we wait a short time thus the user can find the start and end point
         try {
-            Thread.sleep(500);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
         }
+        IPathFinder pathFinder = new DStarKlesk(world);
 
-        //The walker will now use the path finding algorithm to determine the shortest path and walk along.
-        //If the cost changes it recalculates the path using the same path finding algorithm as before
-        walker.walkVerbose(startTile, endTile, 200);
-
-
+        Walker walker = new Walker(world, pathFinder, worldView, pixelFactor);
+        walker.walkSilent(startTile, endTile, 20);
     }
 }

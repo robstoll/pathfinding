@@ -14,8 +14,9 @@
  * limitations under the License.
  * 
  */
-package ch.tutteli.pathfinding;
+package ch.tutteli.pathfinding.examples.bugs;
 
+import ch.tutteli.pathfinding.*;
 import ch.tutteli.pathfinding.utils.IntegerHelper;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -24,10 +25,10 @@ import java.util.PriorityQueue;
  *
  * @author Robert Stoll <rstoll@tutteli.ch>
  */
-public class DStar extends APathFinder implements IPathFinder
+public class DStarException extends APathFinder implements IPathFinder
 {
 
-    public DStar(World world) {
+    public DStarException(World world) {
         super(world);
     }
 
@@ -88,15 +89,9 @@ public class DStar extends APathFinder implements IPathFinder
         start = currentStart;
         addToQueue(currentStart);
 
-        int maxCost = world.getWidth() * world.getHeight() / 10 * 8;
         try {
             while (thereIsABetterPathInQueue()) {
                 stentzsAlgorithm();
-                // we assume that something is wrong when currentTile.currentCost is higher than 
-                // the cost to walk 80% of the tiles
-                if (currentTile.currentCost != Integer.MAX_VALUE && currentTile.currentCost > maxCost) {
-                    throw new DStarCalculationException();
-                }
             }
         } catch (DStarCalculationException e) {
             reset();
@@ -111,7 +106,14 @@ public class DStar extends APathFinder implements IPathFinder
      * @return
      */
     private boolean thereIsABetterPathInQueue() {
-        return queuedTiles.size() > 0;
+        boolean betterPathFound = false;
+        for (Tile tile : queuedTiles) {
+            if (start.currentCost > tile.bestCost) {
+                betterPathFound = true;
+                break;
+            }
+        }
+        return betterPathFound;
     }
 
     @Override
