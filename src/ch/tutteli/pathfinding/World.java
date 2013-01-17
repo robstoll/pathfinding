@@ -166,7 +166,7 @@ public class World
 
         int getActualEnterCost();
 
-        int getReverseEnterCost();
+        int getReverseViaCost();
 
         boolean hasBetterPath();
 
@@ -271,7 +271,7 @@ public class World
         }
 
         @Override
-        public int getReverseEnterCost() {
+        public int getReverseViaCost() {
             return endTile.viaCost.bottom;
         }
 
@@ -329,7 +329,7 @@ public class World
         }
 
         @Override
-        public int getReverseEnterCost() {
+        public int getReverseViaCost() {
             return endTile.viaCost.top;
         }
 
@@ -387,7 +387,7 @@ public class World
         }
 
         @Override
-        public int getReverseEnterCost() {
+        public int getReverseViaCost() {
             return endTile.viaCost.right;
         }
 
@@ -445,7 +445,7 @@ public class World
         }
 
         @Override
-        public int getReverseEnterCost() {
+        public int getReverseViaCost() {
             return endTile.viaCost.left;
         }
 

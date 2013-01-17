@@ -134,8 +134,8 @@ public class DStar extends APathFinder implements IPathFinder
             if (isItBetterToTakeVia(transition)) {
                 takeViaInsteadOfCurrentAction(transition);
             }
-            int costToEnterNeighbour = transition.getReverseEnterCost();
-            if (visitedTiles.contains(neighbour) && !queuedTiles.contains(neighbour) && !isNeighbourPointingToCurrentTile(transition) && costToEnterNeighbour < currentTile.currentCost && currentTile.currentCost > currentTile.bestCost) {
+            int costToGoalViaNeighbour = transition.getReverseViaCost();
+            if (visitedTiles.contains(neighbour) && !queuedTiles.contains(neighbour) && !isNeighbourPointingToCurrentTile(transition) && costToGoalViaNeighbour < currentTile.currentCost && currentTile.currentCost > currentTile.bestCost) {
                 neighbour.bestCost = neighbour.currentCost;
                 addToQueue(neighbour);
             }
