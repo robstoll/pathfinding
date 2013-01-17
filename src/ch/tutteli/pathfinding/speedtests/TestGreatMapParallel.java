@@ -16,7 +16,6 @@
  */
 package ch.tutteli.pathfinding.speedtests;
 
-import ch.tutteli.pathfinding.examples.bugs.DStarLaValle;
 import java.util.concurrent.CountDownLatch;
 
 /**

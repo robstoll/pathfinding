@@ -69,7 +69,6 @@ public class TestMultipleWalker
 
         private static Random random = new Random();
         private CountDownLatch startSignal;
-        private SpeedTestHelper helper;
         private BufferedImage image;
         private WorldView worldView;
         private int number;
@@ -93,7 +92,7 @@ public class TestMultipleWalker
 
                 Tile startTile = WorldHelper.getRandomTile(world, null);
                 Tile endTile = WorldHelper.getRandomTile(world, startTile);
-                System.out.println("walker " + number + " startTile: " + startTile + " -- endTile: " + endTile);
+                
                 //draw the start and end point to the buffer image
                 ImageHelper.setPoint(image, startTile.getPosX(), startTile.getPosY(), pixelFactor, Color.YELLOW);
                 ImageHelper.setPoint(image, endTile.getPosX(), endTile.getPosY(), pixelFactor, Color.GREEN);
@@ -104,7 +103,6 @@ public class TestMultipleWalker
                 walker.useSingleColourLine();
                 walker.setWalkingColor(new Color(random.nextInt(255), number, random.nextInt(255)));
                 walker.walkSilent(startTile, endTile, 20);
-                System.out.println("walker " + number + " at goal tile.");
             } catch (InterruptedException ex) {
                 System.out.println(ex.getMessage());
             } finally {

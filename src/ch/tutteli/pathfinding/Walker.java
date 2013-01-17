@@ -33,8 +33,6 @@ import java.util.Stack;
  */
 public class Walker
 {
-
-    DebugWorld debugWorld = new DebugWorld();
     private static Random random = new Random();
     private World world;
     private IPathFinder pathFinder;

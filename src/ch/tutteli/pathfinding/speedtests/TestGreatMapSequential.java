@@ -16,8 +16,6 @@
  */
 package ch.tutteli.pathfinding.speedtests;
 
-import ch.tutteli.pathfinding.examples.bugs.DStarLaValle;
-
 /**
  *
  * @author Robert Stoll <rstoll@tutteli.ch>

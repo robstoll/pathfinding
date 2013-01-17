@@ -20,8 +20,6 @@ import ch.tutteli.pathfinding.AStar;
 import ch.tutteli.pathfinding.DStar;
 import ch.tutteli.pathfinding.IPathFinder;
 import ch.tutteli.pathfinding.World;
-import ch.tutteli.pathfinding.examples.bugs.DStarKlesk;
-import ch.tutteli.pathfinding.examples.bugs.DStarLaValle;
 
 /**
  *
@@ -34,6 +32,6 @@ public class PathFinderFactory
     }
 
     public static IPathFinder create(World world) {
-        return new DStarKlesk(world);
+        return new DStar(world);
     }
 }
